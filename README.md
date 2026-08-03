@@ -1,5 +1,7 @@
 # Open Brain — Express
 
+> 🚀 **¿Empezando ahora? / Starting now?** Todo lo que necesitas es un solo prompt: **[EMPIEZA-AQUI.md](EMPIEZA-AQUI.md)**
+
 > 🇲🇽 **¿Español?** Empieza en **[Sesión 1 — Cuentas](Sesion-1-Cuentas.md)**.
 > Todo el curso está en español: [Sesión 2](Sesion-2-Construir.md) ·
 > [Sesión 2b](Sesion-2b-Telegram.md) · [Sesión 3](Sesion-3-Conectar.md).
