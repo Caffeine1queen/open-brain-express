@@ -78,8 +78,7 @@ function logUsage(entry: {
   const key = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')
   if (!url || !key) return
 
-  // Deliberately not awaited.
-  fetch(`${url}/rest/v1/llm_usage`, {
+  const work = fetch(`${url}/rest/v1/llm_usage`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -98,6 +97,26 @@ function logUsage(entry: {
     }),
     signal: AbortSignal.timeout(5000),
   }).catch(() => { /* deliberately ignored — see safety rule above */ })
+
+  // Keep the isolate alive until this finishes.
+  //
+  // Without this, the write is a race: the function returns its response, the
+  // runtime tears the isolate down, and an un-awaited fetch that had not yet
+  // completed is simply killed. Cost records would land sometimes and vanish
+  // other times with no pattern, which is worse than not having them.
+  //
+  // waitUntil says "I have returned, but do not shut me down yet." We still
+  // never await it, so the user's response is not delayed by a single
+  // millisecond. The try/catch is for local or older runtimes where
+  // EdgeRuntime does not exist — there the plain promise above is the best
+  // available, and a missing cost row is an acceptable loss.
+  try {
+    // @ts-ignore — EdgeRuntime is provided by Supabase, not by Deno itself
+    if (typeof EdgeRuntime !== 'undefined' && EdgeRuntime?.waitUntil) {
+      // @ts-ignore
+      EdgeRuntime.waitUntil(work)
+    }
+  } catch { /* not available here — carry on */ }
 }
 
 

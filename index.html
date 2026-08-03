@@ -675,6 +675,10 @@ async function loadRecent(){
   $('recentOut').innerHTML = data?.length
     ? data.map(render).join('')
     : `<div class="empty">${t.emptyBrain}</div>`;
+
+  // Refresh the spend figure too — loadRecent runs after every save, so this
+  // keeps the number current instead of only updating on a page reload.
+  loadSpend();
 }
 
 function escapeHtml(s){

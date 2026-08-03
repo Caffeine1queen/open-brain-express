@@ -199,10 +199,10 @@ returns table (
 )
 language plpgsql
 stable
-security definer
-set search_path = public
 as $$
 begin
+  -- Runs as the caller, so row level security applies and they can only ever
+  -- sum their own rows. The explicit user_id filter below is belt and braces.
   return query
     select
       coalesce(sum(u.cost_usd) filter (

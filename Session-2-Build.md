@@ -242,6 +242,7 @@ easy to miss and nothing works without it — the trigger silently does nothing.
 Then, in the SAME webhook.sql file, add the weekly digest schedule underneath:
 
   create extension if not exists pg_cron;
+  grant usage on schema cron to postgres;
 
   -- Remove any previous copy first, so running this twice is harmless
   do $$
