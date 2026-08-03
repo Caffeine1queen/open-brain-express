@@ -10,6 +10,42 @@ Work through it top to bottom. Skip anything you already have.
 
 ---
 
+## Read this first — it is the most important part
+
+**Ask Claude everything. Do not ask the person who gave you this.**
+
+Not because they are unwilling. Because learning to ask the machine *is the
+build*. Everything else you make here is downstream of that one habit.
+
+You are going to hit things you do not understand. A word you have never seen.
+A red error message. A screen that does not look like the description. Every
+single time, the move is the same:
+
+> **Tell Claude exactly what you are looking at and ask it what to do.**
+
+You do not need to know the right vocabulary. These all work:
+
+- *"I don't understand what an API key is. Explain it like I'm not technical."*
+- *"I got a red error. Here it is: [paste it]. What do I do?"*
+- *"My screen doesn't look like what the instructions describe."*
+- *"You just did something. What was it and why?"*
+- *"Is this safe? What am I actually agreeing to here?"*
+- *"I'm lost. Where are we and what happens next?"*
+
+Paste error messages in full. Take a screenshot and paste that in. Claude can
+read both, and an error message pasted in is far more useful than trying to
+describe it.
+
+**There is no such thing as a stupid question here, and you cannot break
+anything by asking one.** The worst outcome is that you sit quietly being
+confused, and the whole thing feels like magic you cannot repeat. The person who
+asks forty questions today will be able to build the next thing alone. The
+person who waits to be rescued will not.
+
+If you take one thing from today, take that.
+
+---
+
 ## What you are building, in one paragraph
 
 A private knowledge base that belongs to you. You save things into it — typed

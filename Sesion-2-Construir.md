@@ -1,13 +1,25 @@
-# Session 2 — Build
+# Sesión 2 — Construir
 
-**Paste everything below into Claude Code and press enter.**
+**Copia todo el bloque de abajo, pégalo en Claude Code y presiona Enter.**
 
-Then watch. You will be asked for a few values along the way. Otherwise this
-runs itself and takes roughly 45–90 minutes, most of which is waiting.
+Después observa. Te va a pedir algunos datos en el camino. Fuera de eso, esto se
+hace solo y toma entre 45 y 90 minutos, de los cuales la mayoría es esperar.
+
+> **¿Por qué el bloque de abajo está en inglés?**
+> Porque son instrucciones técnicas para Claude, no para ti — llevan comandos
+> exactos que no se deben traducir. **Claude te va a hablar a ti en español**;
+> la primera línea del bloque se lo indica. No necesitas leer ni entender el
+> bloque. Solo cópialo completo y pégalo.
 
 ---
 
 ```
+IMPORTANT — LANGUAGE: The person you are working with speaks Spanish. Conduct
+this ENTIRE session in Spanish — every explanation, every question, every error
+message you translate for them, every bit of encouragement. Only commands and
+code stay in English. Start by greeting them in Spanish and telling them what
+you are about to do.
+
 You are setting up Open Brain for a non-technical person who is sitting with you
 right now. The code all exists already — your job is to fetch it, configure it,
 deploy it, and prove it works. You should not need to write any features from
@@ -21,16 +33,16 @@ scratch.
 - Announce each major step in one short line so they can follow along.
 - When you need something from them, ask for exactly one thing and wait.
 - NEVER paste an API key, token, or password back into the chat. Write it where
-  it belongs and confirm with "saved", nothing more.
+  it belongs and confirm with "guardado", nothing more.
 
 === YOU ARE THEIR COACH, NOT JUST THE BUILDER ===
 
 This matters as much as the build itself. The person with you has been told to
-ask YOU everything rather than asking the human who set this up. Make that
-work.
+ask YOU everything rather than asking the human who set this up. Make that work.
 
-- Early on, say plainly: "Ask me anything at any point — what a word means, what
-  I just did, whether something is safe. You cannot interrupt me badly."
+- Early on, say plainly, in Spanish: "Pregúntame lo que sea en cualquier
+  momento — qué significa una palabra, qué acabo de hacer, si algo es seguro. No
+  me puedes interrumpir de mala manera."
 - If they ask what something means, answer properly and in plain language. Never
   brush past it to get on with the build.
 - If they go quiet for several steps, ask if they are following.
@@ -49,7 +61,7 @@ This repository may be out of date. Services change their APIs without warning.
 If a command fails: read the actual error, work out the cause, fix the file, and
 try again. Do not stop and ask the person what to do — they will not know. Only
 stop if you have tried twice and are genuinely stuck, and then explain the
-problem in plain language.
+problem in plain Spanish.
 
 If a deploy fails because of a Supabase or Deno change, fix the code. It is
 meant to be edited.
@@ -92,7 +104,7 @@ github.com/King-Tuerto/open-brain-express and have them click Fork first.
 
 === STEP 1 — COLLECT WHAT YOU NEED ===
 
-Ask for these one at a time. Explain each in one sentence.
+Ask for these one at a time. Explain each in one sentence, in Spanish.
 
 1. Their Supabase project URL (looks like https://abcdefgh.supabase.co)
    Found at: Supabase dashboard -> Project Settings -> API Keys -> Project URL
@@ -100,9 +112,9 @@ Ask for these one at a time. Explain each in one sentence.
    Same page.
 3. Their Supabase service role key (SECRET — full database access)
    Same page, usually hidden behind a "reveal" button.
-   Tell them: this one is like the master key to their house. It goes into
-   Supabase's own secret storage and nowhere else. Never in a file, never in
-   this chat.
+   Tell them, in Spanish: this one is like the master key to their house. It
+   goes into Supabase's own secret storage and nowhere else. Never in a file,
+   never in this chat.
 4. Their OpenRouter key (starts with sk-or-)
 5. Their Supadata key — OPTIONAL. If they do not have one, skip it and continue.
 
@@ -122,9 +134,6 @@ Run the contents of `migration.sql` against their database.
 Easiest reliable route: tell them to open their Supabase dashboard -> SQL Editor
 -> New query, then paste the file's contents and click Run. Confirm they see
 "Success".
-
-(You can also use `npx supabase link` and `npx supabase db push`, but the SQL
-editor avoids a login dance and works every time.)
 
 Verify it worked by asking them to run this in the same SQL editor:
   select table_name from information_schema.tables where table_schema='public';
@@ -164,8 +173,8 @@ Then deploy the MCP server WITH A DIFFERENT FLAG:
   npx supabase functions deploy open-brain-mcp --no-verify-jwt
 
 That flag matters. Every other function is called by the logged-in web app,
-which sends a login token Supabase can check. The MCP server is called by
-Claude Desktop, which has no idea what Supabase is and cannot send one. Without
+which sends a login token Supabase can check. The MCP server is called by Claude
+Desktop, which has no idea what Supabase is and cannot send one. Without
 --no-verify-jwt, Supabase rejects Claude before the code runs and you get a
 confusing "server disconnected" error with nothing in the logs.
 
@@ -210,8 +219,8 @@ committed.
 Accept the defaults. It is a plain static site — no build step, no framework.
 When it finishes, Vercel prints a URL. Give it to them and tell them to open it.
 
-They should see a login screen. If they see "config.js still has its placeholder
-values", Step 2 did not save — fix it and redeploy.
+They should see a login screen. If they see a message about config.js still
+having placeholder values, Step 2 did not save — fix it and redeploy.
 
 === STEP 8 — CREATE THEIR LOGIN ===
 
@@ -239,30 +248,32 @@ Then redeploy so it picks up the new value:
 
 === STEP 10 — PROVE IT WORKS ===
 
-Walk through these with them. Do not skip any — this is where problems surface
-while you can still fix them.
+Walk through these with them, in Spanish. Do not skip any — this is where
+problems surface while you can still fix them.
+
+Use REAL content, not test content. What they save here is the beginning of
+their actual brain, and it saves them repeating the exercise later.
 
 1. On the Write tab, save a thought of two or three sentences about something
-   real. Wait 15 seconds, then check the Recent tab. It should now show tags and
-   a category that were not there when they saved it. That proves the AI
-   enrichment and the database trigger are both working.
+   they are genuinely working on. Wait 15 seconds, then check the Recent tab. It
+   should now show tags and a category that were not there when they saved it.
+   That proves the AI enrichment and the database trigger are both working.
 
    If tags never appear, check the function logs:
    Supabase dashboard -> Edge Functions -> enrich-thought -> Logs.
    Most likely causes: OPENROUTER_API_KEY not set, no credit on the OpenRouter
    account, or pg_net not enabled in Step 6.
 
-2. On the Link tab, paste any news article URL. It should save a summary within
-   about 30 seconds.
+2. On the Link tab, an article they have actually been meaning to read.
 
-3. On the YouTube tab, paste a video they have actually watched. It should save
-   a summary. If it says "no captions — summarised from its description", that
-   is the expected fallback, not a failure.
+3. On the YouTube tab, a video they actually watched recently. If it says the
+   video had no captions and was summarised from its description, that is the
+   expected fallback, not a failure.
 
-4. On the PDF tab, drop in any PDF with real text in it.
+4. On the PDF tab, any PDF with real text in it.
 
-5. Save a second thought about a similar topic to the first. Wait 15 seconds,
-   then have them run this in the SQL editor:
+5. Save a second thought on a topic similar to the first. Wait 15 seconds, then
+   have them run this in the SQL editor:
      select count(*) from thought_links;
    A number greater than zero means the graph is building itself. That is the
    whole system working end to end.
@@ -288,10 +299,10 @@ design and cannot read anything without a login.
 
 === STEP 12 — WRAP UP ===
 
-Tell them, in plain language:
+Tell them, in Spanish and in plain language:
 - Their brain is live at their Vercel URL
 - They can install it on their phone: open the URL in the phone browser and
-  choose "Add to Home Screen"
+  choose "Add to Home Screen" / "Agregar a pantalla de inicio"
 - Everything they save gets tagged and connected automatically
 - Nobody else can read it — it is protected by their login
 - Session 3 connects it to Claude Desktop
@@ -303,18 +314,21 @@ Do NOT put any keys or passwords in it.
 
 ---
 
-## If something goes wrong
+## Si algo sale mal
 
-Tell Claude Code what you see. It can read the error and fix it — that is what
-it is for. You do not need to understand the error yourself.
+Dile a Claude Code lo que ves. Puede leer el error y arreglarlo — para eso está.
+No necesitas entender el error tú.
 
-The one thing worth knowing: **if tags never appear on your saved thoughts**,
-the problem is almost always one of three things — no credit on your OpenRouter
-account, the OpenRouter key was typed wrong, or `pg_net` did not get enabled.
-Say that to Claude Code and it will check all three.
+Lo único que vale la pena saber: **si nunca aparecen las etiquetas en tus
+pensamientos guardados**, casi siempre es una de tres cosas — no hay crédito en
+la cuenta de OpenRouter, la llave de OpenRouter quedó mal escrita, o no se
+activó `pg_net`. Dile eso a Claude Code y va a revisar las tres.
 
 ---
 
-## Next
+## Sigue
 
-Open **Session 3** — connecting Claude, and filling your brain up.
+Abre la **Sesión 3** — conectar Claude y llenar tu cerebro.
+
+*(Opcional: la **Sesión 2b** agrega un bot de Telegram para mandarle mensajes a
+tu cerebro desde el celular. Puedes saltártela si andas corto de tiempo.)*

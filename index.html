@@ -23,24 +23,23 @@
   }
   .wrap{max-width:760px;margin:0 auto;padding:20px 16px 64px}
 
-  /* ---------- login ---------- */
-  #auth{max-width:380px;margin:12vh auto;padding:0 20px;text-align:center}
+  #auth{max-width:380px;margin:10vh auto;padding:0 20px;text-align:center}
   #auth h1{font-size:30px;margin-bottom:6px}
-  #auth p{color:var(--dim);font-size:14px;margin-bottom:26px}
+  #authTag{color:var(--dim);font-size:14px;margin-bottom:26px}
   #auth input{width:100%;margin-bottom:10px}
   .auth-toggle{margin-top:16px;font-size:14px;color:var(--dim)}
   .auth-toggle a{color:var(--accent);cursor:pointer;text-decoration:none}
+  #authLang{margin-top:22px}
 
-  /* ---------- header ---------- */
   header{display:flex;align-items:center;gap:10px;margin-bottom:18px;flex-wrap:wrap}
-  header h1{font-size:22px;flex:1;min-width:150px}
+  header h1{font-size:22px;flex:1;min-width:140px}
   .status{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--dim)}
   .dot{width:8px;height:8px;border-radius:50%;background:var(--warn)}
   .dot.on{background:var(--ok)} .dot.off{background:var(--bad)}
-  .signout{background:none;border:none;color:var(--dim);font-size:12px;cursor:pointer;padding:4px}
-  .signout:hover{color:var(--text)}
+  .mini{background:none;border:1px solid var(--line);color:var(--dim);
+        font-size:11px;cursor:pointer;padding:3px 8px;border-radius:6px}
+  .mini:hover{color:var(--text);border-color:var(--dim)}
 
-  /* ---------- tabs ---------- */
   nav{display:flex;gap:4px;overflow-x:auto;margin-bottom:16px;padding-bottom:4px;scrollbar-width:none}
   nav::-webkit-scrollbar{display:none}
   nav button{
@@ -49,7 +48,6 @@
   }
   nav button.active{background:var(--accent);border-color:var(--accent);color:#fff}
 
-  /* ---------- panels ---------- */
   .panel{display:none} .panel.active{display:block}
   .card{background:var(--card);border:1px solid var(--line);border-radius:13px;padding:17px;margin-bottom:13px}
   .hint{color:var(--dim);font-size:13px;margin-bottom:11px}
@@ -67,9 +65,7 @@
   }
   button.go:hover{background:var(--accent-dim)}
   button.go:disabled{opacity:.5;cursor:not-allowed}
-  button.ghost{background:var(--card2);border:1px solid var(--line);color:var(--text)}
 
-  /* ---------- mic ---------- */
   #mic{
     width:88px;height:88px;border-radius:50%;border:none;background:var(--accent);
     color:#fff;font-size:34px;cursor:pointer;display:block;margin:6px auto 14px;
@@ -77,14 +73,10 @@
   #mic.live{background:var(--bad);animation:pulse 1.4s infinite}
   @keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.07)}}
 
-  /* ---------- drop zone ---------- */
-  #drop{
-    border:2px dashed var(--line);border-radius:13px;padding:34px 18px;
-    text-align:center;color:var(--dim);cursor:pointer;
-  }
+  #drop{border:2px dashed var(--line);border-radius:13px;padding:34px 18px;
+        text-align:center;color:var(--dim);cursor:pointer}
   #drop.over{border-color:var(--accent);background:rgba(99,102,241,.07)}
 
-  /* ---------- results ---------- */
   .thought{background:var(--card);border:1px solid var(--line);border-radius:11px;padding:14px;margin-bottom:10px}
   .thought .meta{font-size:11px;color:var(--dim);margin-bottom:7px;display:flex;gap:7px;flex-wrap:wrap;align-items:center}
   .badge{background:var(--card2);border:1px solid var(--line);border-radius:5px;padding:1px 7px;font-size:10px}
@@ -104,106 +96,99 @@
 </head>
 <body>
 
-<!-- ==================== LOGIN ==================== -->
 <div id="auth">
   <h1>🧠 Open Brain</h1>
-  <p>Your knowledge. Your database. Your rules.</p>
-  <input type="email" id="email" placeholder="you@example.com" autocomplete="email">
-  <input type="password" id="password" placeholder="password" autocomplete="current-password">
+  <p id="authTag">Your knowledge. Your database. Your rules.</p>
+  <input type="email" id="email" autocomplete="email">
+  <input type="password" id="password" autocomplete="current-password">
   <button class="go" id="authBtn" style="width:100%">Sign in</button>
   <div class="msg" id="authMsg"></div>
   <div class="auth-toggle">
     <span id="authSwitchText">No account yet?</span>
     <a id="authSwitch">Create one</a>
   </div>
+  <div id="authLang"><button class="mini" id="langBtn2">ES</button></div>
 </div>
 
-<!-- ==================== APP ==================== -->
 <div class="wrap" id="app" style="display:none">
   <header>
     <h1>🧠 Open Brain</h1>
-    <div class="status"><span class="dot" id="dot"></span><span id="statusText">connecting…</span></div>
-    <button class="signout" id="signout">sign out</button>
+    <div class="status"><span class="dot" id="dot"></span><span id="statusText"></span></div>
+    <button class="mini" id="langBtn">ES</button>
+    <button class="mini" id="signout">sign out</button>
   </header>
 
   <nav>
-    <button data-tab="write"  class="active">✏️ Write</button>
-    <button data-tab="voice">🎙️ Voice</button>
-    <button data-tab="youtube">📹 YouTube</button>
-    <button data-tab="pdf">📄 PDF</button>
-    <button data-tab="url">🔗 Link</button>
-    <button data-tab="search">🔍 Search</button>
-    <button data-tab="recent">🕐 Recent</button>
+    <button data-tab="write" class="active"></button>
+    <button data-tab="voice"></button>
+    <button data-tab="youtube"></button>
+    <button data-tab="pdf"></button>
+    <button data-tab="url"></button>
+    <button data-tab="search"></button>
+    <button data-tab="recent"></button>
   </nav>
 
-  <!-- WRITE -->
   <section class="panel active" id="p-write">
     <div class="card">
-      <div class="hint">Anything worth remembering. Ctrl+Enter saves.</div>
-      <textarea id="writeText" placeholder="What's on your mind?"></textarea>
-      <button class="go" id="writeSave">Save to brain</button>
+      <div class="hint" id="writeHint"></div>
+      <textarea id="writeText"></textarea>
+      <button class="go" id="writeSave"></button>
       <div class="msg" id="writeMsg"></div>
     </div>
   </section>
 
-  <!-- VOICE -->
   <section class="panel" id="p-voice">
     <div class="card">
-      <div class="hint">Speak, review the text, then save. Works best in Chrome or Edge.</div>
+      <div class="hint" id="voiceHint"></div>
       <button id="mic">🎙️</button>
-      <textarea id="voiceText" placeholder="Your words will appear here…"></textarea>
-      <button class="go" id="voiceSave">Save to brain</button>
+      <textarea id="voiceText"></textarea>
+      <button class="go" id="voiceSave"></button>
       <div class="msg" id="voiceMsg"></div>
     </div>
   </section>
 
-  <!-- YOUTUBE -->
   <section class="panel" id="p-youtube">
     <div class="card">
-      <div class="hint">Paste a link. The spoken transcript is fetched and summarised automatically — no copying required.</div>
+      <div class="hint" id="ytHint"></div>
       <input type="url" id="ytUrl" placeholder="https://www.youtube.com/watch?v=…">
-      <button class="go" id="ytGo">Capture video</button>
+      <button class="go" id="ytGo"></button>
       <div class="msg" id="ytMsg"></div>
     </div>
   </section>
 
-  <!-- PDF -->
   <section class="panel" id="p-pdf">
     <div class="card">
-      <div class="hint">Drop a PDF or tap to choose one. The text is read in your browser — the file never leaves your computer.</div>
+      <div class="hint" id="pdfHint"></div>
       <div id="drop">
         <div style="font-size:30px;margin-bottom:7px">📄</div>
-        <div>Drop a PDF here, or tap to browse</div>
+        <div id="pdfDropText"></div>
       </div>
       <input type="file" id="pdfFile" accept="application/pdf" style="display:none">
-      <textarea id="pdfText" placeholder="Extracted text appears here for review…" style="margin-top:11px"></textarea>
-      <button class="go" id="pdfSave">Save to brain</button>
+      <textarea id="pdfText" style="margin-top:11px"></textarea>
+      <button class="go" id="pdfSave"></button>
       <div class="msg" id="pdfMsg"></div>
     </div>
   </section>
 
-  <!-- URL -->
   <section class="panel" id="p-url">
     <div class="card">
-      <div class="hint">Any article or page. The readable text is fetched and summarised on the server.</div>
+      <div class="hint" id="urlHint"></div>
       <input type="url" id="urlInput" placeholder="https://…">
-      <button class="go" id="urlGo">Capture page</button>
+      <button class="go" id="urlGo"></button>
       <div class="msg" id="urlMsg"></div>
     </div>
   </section>
 
-  <!-- SEARCH -->
   <section class="panel" id="p-search">
     <div class="card">
-      <div class="hint">Search by meaning, not just words. "How do I get clients" will find notes about customer acquisition.</div>
-      <input type="text" id="q" placeholder="What are you looking for?">
-      <button class="go" id="searchGo">Search</button>
+      <div class="hint" id="searchHint"></div>
+      <input type="text" id="q">
+      <button class="go" id="searchGo"></button>
     </div>
     <div class="msg" id="searchMsg"></div>
     <div id="searchOut"></div>
   </section>
 
-  <!-- RECENT -->
   <section class="panel" id="p-recent">
     <div class="count" id="recentCount"></div>
     <div id="recentOut"></div>
@@ -224,44 +209,187 @@ if (window.pdfjsLib) {
     'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
 }
 
-// ---------- tiny helpers ----------
 const $ = id => document.getElementById(id);
+
+// ===========================================================================
+// LANGUAGE
+// Follows the browser on first visit; the EN/ES button overrides and is
+// remembered. To add a language, copy the `es` block and translate it.
+// ===========================================================================
+const T = {
+  en: {
+    tagline:'Your knowledge. Your database. Your rules.',
+    email:'you@example.com', password:'password',
+    signIn:'Sign in', createAccount:'Create account',
+    noAccount:'No account yet?', haveAccount:'Already have one?', createOne:'Create one',
+    connecting:'connecting…', connected:'connected', dbError:'database error',
+    signOut:'sign out',
+    tabs:['✏️ Write','🎙️ Voice','📹 YouTube','📄 PDF','🔗 Link','🔍 Search','🕐 Recent'],
+    writeHint:'Anything worth remembering. Ctrl+Enter saves.',
+    writePh:"What's on your mind?",
+    voiceHint:'Speak, review the text, then save. Works best in Chrome or Edge.',
+    voicePh:'Your words will appear here…',
+    ytHint:'Paste a link. The spoken transcript is fetched and summarised automatically — no copying required.',
+    pdfHint:'Drop a PDF or tap to choose one. The text is read in your browser — the file never leaves your computer.',
+    pdfDrop:'Drop a PDF here, or tap to browse',
+    pdfPh:'Extracted text appears here for review…',
+    urlHint:'Any article or page. The readable text is fetched and summarised on the server.',
+    searchHint:'Search by meaning, not just words. "How do I get clients" will find notes about customer acquisition.',
+    searchPh:'What are you looking for?',
+    save:'Save to brain', captureVideo:'Capture video', capturePage:'Capture page', search:'Search',
+    saving:'Saving…', fetching:'Fetching…', searching:'Searching…',
+    savedShort:'Saved.', savedLong:'Saved. Tags and connections are being added now.',
+    nothingYet:'Nothing to save yet.', nothingRec:'Nothing recorded yet.',
+    emptyBrain:'Nothing saved yet.<br>Use the Write tab to add your first thought.',
+    noMatch:q=>`Nothing matches "${q}" yet.`,
+    count:n=>`${n} thought${n===1?'':'s'} in your brain`,
+    byMeaning:n=>`${n} result${n===1?'':'s'} — matched by meaning`,
+    byKeyword:n=>`${n} result${n===1?'':'s'} — matched by keyword`,
+    needBoth:'Enter an email and a password.',
+    shortPw:'Password must be at least 6 characters.',
+    accountMade:'Account created. Signing you in…',
+    confirmEmail:'This account needs email confirmation. Turn it off in Supabase → Authentication → Sign In / Providers → Email → uncheck "Confirm email", then try again.',
+    pasteYt:'Paste a YouTube link first.', pasteUrl:'Paste a link first.',
+    ytWorking:'Fetching the transcript and summarising. This takes 15–40 seconds.',
+    urlWorking:'Fetching the page and summarising…',
+    noCaptions:' (no captions on this video — summarised from its description)',
+    ytFail:'Could not capture that video.', urlFail:'Could not capture that page.',
+    searchFail:'Search failed.',
+    listening:'Listening…',
+    micBlocked:'Microphone access was blocked. Allow it in your browser settings and try again.',
+    micErr:e=>`Microphone error: ${e}`,
+    noSpeech:'This browser cannot do speech recognition. Chrome or Edge will work.',
+    notPdf:'That is not a PDF.',
+    pdfReading:n=>`Reading ${n}…`, pdfPage:(p,n)=>`Reading page ${p} of ${n}…`,
+    pdfScanned:'Almost no text found. This is probably a scanned PDF — an image of a page rather than real text. It would need OCR software first.',
+    pdfDone:n=>`Read ${n} page${n===1?'':'s'}. Review it, then save.`,
+    pdfFail:m=>`Could not read that PDF: ${m}`,
+    setupTitle:'Almost there — this app has not been connected to your database yet.',
+    setupBody:'<strong>config.js still has its placeholder values.</strong><br><br>Tell Claude Code: <em>"fill in config.js with my Supabase URL and public key"</em> — or edit the file yourself. Both values are in your Supabase dashboard under Project Settings → API Keys.',
+  },
+  es: {
+    tagline:'Tu conocimiento. Tu base de datos. Tus reglas.',
+    email:'tu@ejemplo.com', password:'contraseña',
+    signIn:'Entrar', createAccount:'Crear cuenta',
+    noAccount:'¿Todavía no tienes cuenta?', haveAccount:'¿Ya tienes una?', createOne:'Crear una',
+    connecting:'conectando…', connected:'conectado', dbError:'error de base de datos',
+    signOut:'salir',
+    tabs:['✏️ Escribir','🎙️ Voz','📹 YouTube','📄 PDF','🔗 Liga','🔍 Buscar','🕐 Recientes'],
+    writeHint:'Lo que valga la pena recordar. Ctrl+Enter guarda.',
+    writePh:'¿Qué estás pensando?',
+    voiceHint:'Habla, revisa el texto y guarda. Funciona mejor en Chrome o Edge.',
+    voicePh:'Tus palabras van a aparecer aquí…',
+    ytHint:'Pega una liga. La transcripción se obtiene y se resume automáticamente — no tienes que copiar nada.',
+    pdfHint:'Suelta un PDF o toca para elegir uno. El texto se lee en tu navegador — el archivo nunca sale de tu computadora.',
+    pdfDrop:'Suelta un PDF aquí, o toca para buscar',
+    pdfPh:'El texto extraído aparece aquí para que lo revises…',
+    urlHint:'Cualquier artículo o página. El texto se obtiene y se resume en el servidor.',
+    searchHint:'Busca por significado, no solo por palabras. "Cómo consigo clientes" va a encontrar tus notas sobre captación.',
+    searchPh:'¿Qué estás buscando?',
+    save:'Guardar en el cerebro', captureVideo:'Capturar video', capturePage:'Capturar página', search:'Buscar',
+    saving:'Guardando…', fetching:'Obteniendo…', searching:'Buscando…',
+    savedShort:'Guardado.', savedLong:'Guardado. Se están agregando las etiquetas y conexiones.',
+    nothingYet:'Todavía no hay nada que guardar.', nothingRec:'Todavía no has grabado nada.',
+    emptyBrain:'Todavía no has guardado nada.<br>Usa la pestaña Escribir para tu primer pensamiento.',
+    noMatch:q=>`Nada coincide con "${q}" todavía.`,
+    count:n=>`${n} pensamiento${n===1?'':'s'} en tu cerebro`,
+    byMeaning:n=>`${n} resultado${n===1?'':'s'} — encontrados por significado`,
+    byKeyword:n=>`${n} resultado${n===1?'':'s'} — encontrados por palabra`,
+    needBoth:'Escribe un correo y una contraseña.',
+    shortPw:'La contraseña necesita al menos 6 caracteres.',
+    accountMade:'Cuenta creada. Entrando…',
+    confirmEmail:'Esta cuenta necesita confirmación de correo. Desactívala en Supabase → Authentication → Sign In / Providers → Email → desmarca "Confirm email", y vuelve a intentar.',
+    pasteYt:'Primero pega una liga de YouTube.', pasteUrl:'Primero pega una liga.',
+    ytWorking:'Obteniendo la transcripción y resumiendo. Esto tarda de 15 a 40 segundos.',
+    urlWorking:'Obteniendo la página y resumiendo…',
+    noCaptions:' (este video no tiene subtítulos — se resumió desde su descripción)',
+    ytFail:'No se pudo capturar ese video.', urlFail:'No se pudo capturar esa página.',
+    searchFail:'Falló la búsqueda.',
+    listening:'Escuchando…',
+    micBlocked:'Se bloqueó el acceso al micrófono. Permítelo en la configuración de tu navegador e intenta de nuevo.',
+    micErr:e=>`Error de micrófono: ${e}`,
+    noSpeech:'Este navegador no puede reconocer voz. Chrome o Edge sí funcionan.',
+    notPdf:'Eso no es un PDF.',
+    pdfReading:n=>`Leyendo ${n}…`, pdfPage:(p,n)=>`Leyendo página ${p} de ${n}…`,
+    pdfScanned:'Casi no se encontró texto. Probablemente es un PDF escaneado — una imagen de una página en lugar de texto real. Necesitaría pasar por un programa de OCR primero.',
+    pdfDone:n=>`Se leyeron ${n} página${n===1?'':'s'}. Revísalo y guarda.`,
+    pdfFail:m=>`No se pudo leer ese PDF: ${m}`,
+    setupTitle:'Ya casi — esta aplicación todavía no está conectada a tu base de datos.',
+    setupBody:'<strong>config.js todavía tiene sus valores de ejemplo.</strong><br><br>Dile a Claude Code: <em>"llena config.js con mi URL de Supabase y mi llave pública"</em> — o edita el archivo tú. Los dos valores están en tu panel de Supabase, en Project Settings → API Keys.',
+  },
+};
+
+const saved = localStorage.getItem('ob_lang');
+let lang = saved || ((navigator.language || 'en').toLowerCase().startsWith('es') ? 'es' : 'en');
+let t = T[lang];
+let signingUp = false;
+
+function applyLanguage(){
+  t = T[lang] || T.en;
+  document.documentElement.lang = lang;
+  const txt = (id,v) => { const n=$(id); if(n) n.textContent = v; };
+  const ph  = (id,v) => { const n=$(id); if(n) n.placeholder = v; };
+
+  txt('authTag', t.tagline);
+  ph('email', t.email); ph('password', t.password);
+  txt('authBtn', signingUp ? t.createAccount : t.signIn);
+  txt('authSwitchText', signingUp ? t.haveAccount : t.noAccount);
+  txt('authSwitch', signingUp ? t.signIn : t.createOne);
+  txt('signout', t.signOut);
+
+  document.querySelectorAll('nav button').forEach((b,i) => { b.textContent = t.tabs[i]; });
+
+  txt('writeHint', t.writeHint);   ph('writeText', t.writePh);
+  txt('voiceHint', t.voiceHint);   ph('voiceText', t.voicePh);
+  txt('ytHint', t.ytHint);
+  txt('pdfHint', t.pdfHint);       txt('pdfDropText', t.pdfDrop); ph('pdfText', t.pdfPh);
+  txt('urlHint', t.urlHint);
+  txt('searchHint', t.searchHint); ph('q', t.searchPh);
+  txt('writeSave', t.save); txt('voiceSave', t.save); txt('pdfSave', t.save);
+  txt('ytGo', t.captureVideo); txt('urlGo', t.capturePage); txt('searchGo', t.search);
+
+  const label = lang === 'es' ? 'EN' : 'ES';
+  txt('langBtn', label); txt('langBtn2', label);
+}
+
+function toggleLanguage(){
+  lang = lang === 'es' ? 'en' : 'es';
+  localStorage.setItem('ob_lang', lang);
+  applyLanguage();
+  if (user) { loadRecent(); }
+}
+
+applyLanguage();
+$('langBtn').onclick = toggleLanguage;
+$('langBtn2').onclick = toggleLanguage;
 
 // ===========================================================================
 // SETUP CHECK
 // Without this, an unfilled config.js throws on the very first line and the
-// whole page silently stops working — you get a login form where nothing
-// happens when you click. Better to say plainly what is wrong.
+// whole page silently stops working — a login form where nothing happens.
 // ===========================================================================
 const configOk =
-  typeof SUPABASE_URL === 'string' &&
-  typeof SUPABASE_ANON_KEY === 'string' &&
+  typeof SUPABASE_URL === 'string' && typeof SUPABASE_ANON_KEY === 'string' &&
   SUPABASE_URL.startsWith('http') &&
-  !SUPABASE_URL.includes('PASTE_') &&
-  !SUPABASE_ANON_KEY.includes('PASTE_');
+  !SUPABASE_URL.includes('PASTE_') && !SUPABASE_ANON_KEY.includes('PASTE_');
 
 if (!configOk) {
   $('auth').innerHTML =
-    '<h1>🧠 Open Brain</h1>' +
-    '<p>Almost there — this app has not been connected to your database yet.</p>' +
-    '<div class="msg show err" style="text-align:left">' +
-      '<strong>config.js still has its placeholder values.</strong><br><br>' +
-      'Tell Claude Code: <em>"fill in config.js with my Supabase URL and public key"</em>' +
-      ' — or edit the file yourself. Both values are in your Supabase dashboard ' +
-      'under Project Settings → API Keys.' +
-    '</div>';
+    '<h1>🧠 Open Brain</h1><p id="authTag">' + t.setupTitle + '</p>' +
+    '<div class="msg show err" style="text-align:left">' + t.setupBody + '</div>';
   throw new Error('Open Brain: config.js is not filled in yet.');
 }
 
 const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 let user = null;
+
 function say(el, text, kind='work'){
   const n = $(el); n.textContent = text; n.className = 'msg show ' + kind;
 }
 function clear(el){ $(el).className = 'msg'; }
 function busy(btn, on, label){
   const b = $(btn); b.disabled = on;
-  if (on){ b.dataset.was = b.textContent; b.textContent = label || 'Working…'; }
+  if (on){ b.dataset.was = b.textContent; b.textContent = label || t.saving; }
   else if (b.dataset.was){ b.textContent = b.dataset.was; }
 }
 async function fn(name, payload){
@@ -281,21 +409,13 @@ async function fn(name, payload){
 // ===========================================================================
 // AUTH
 // ===========================================================================
-let signingUp = false;
-
-$('authSwitch').onclick = () => {
-  signingUp = !signingUp;
-  $('authBtn').textContent   = signingUp ? 'Create account' : 'Sign in';
-  $('authSwitchText').textContent = signingUp ? 'Already have one?' : 'No account yet?';
-  $('authSwitch').textContent     = signingUp ? 'Sign in' : 'Create one';
-  clear('authMsg');
-};
+$('authSwitch').onclick = () => { signingUp = !signingUp; applyLanguage(); clear('authMsg'); };
 
 $('authBtn').onclick = async () => {
   const email = $('email').value.trim();
   const password = $('password').value;
-  if (!email || !password) return say('authMsg','Enter an email and a password.','err');
-  if (password.length < 6) return say('authMsg','Password must be at least 6 characters.','err');
+  if (!email || !password) return say('authMsg', t.needBoth, 'err');
+  if (password.length < 6) return say('authMsg', t.shortPw, 'err');
 
   busy('authBtn', true);
   const { error } = signingUp
@@ -304,13 +424,9 @@ $('authBtn').onclick = async () => {
   busy('authBtn', false);
 
   if (error) {
-    // The most common setup snag, translated into something actionable
-    const msg = /confirm/i.test(error.message)
-      ? 'This account needs email confirmation. Turn it off in Supabase → Authentication → Sign In / Providers → Email → uncheck "Confirm email", then try again.'
-      : error.message;
-    return say('authMsg', msg, 'err');
+    return say('authMsg', /confirm/i.test(error.message) ? t.confirmEmail : error.message, 'err');
   }
-  if (signingUp) say('authMsg','Account created. Signing you in…','ok');
+  if (signingUp) say('authMsg', t.accountMade, 'ok');
 };
 
 $('signout').onclick = async () => { await sb.auth.signOut(); location.reload(); };
@@ -323,9 +439,11 @@ sb.auth.onAuthStateChange((_e, session) => {
 async function start(){
   $('auth').style.display = 'none';
   $('app').style.display  = 'block';
+  applyLanguage();
+  $('statusText').textContent = t.connecting;
   const { error } = await sb.from('thoughts').select('id', { count:'exact', head:true });
-  if (error){ $('dot').className='dot off'; $('statusText').textContent='database error'; }
-  else { $('dot').className='dot on'; $('statusText').textContent='connected'; }
+  if (error){ $('dot').className='dot off'; $('statusText').textContent=t.dbError; }
+  else { $('dot').className='dot on'; $('statusText').textContent=t.connected; }
   loadRecent();
 }
 
@@ -346,20 +464,19 @@ document.querySelectorAll('nav button').forEach(b => {
 // SAVING
 // ===========================================================================
 async function save(content, source, metadata={}){
-  const { error } = await sb.from('thoughts')
-    .insert({ user_id:user.id, content, source, metadata });
+  const { error } = await sb.from('thoughts').insert({ user_id:user.id, content, source, metadata });
   return error;
 }
 
 $('writeSave').onclick = async () => {
-  const t = $('writeText').value.trim();
-  if (!t) return say('writeMsg','Nothing to save yet.','err');
-  busy('writeSave', true, 'Saving…');
-  const err = await save(t, 'text');
+  const v = $('writeText').value.trim();
+  if (!v) return say('writeMsg', t.nothingYet, 'err');
+  busy('writeSave', true);
+  const err = await save(v, 'text');
   busy('writeSave', false);
   if (err) return say('writeMsg', err.message, 'err');
   $('writeText').value = '';
-  say('writeMsg','Saved. Tags and connections are being added now.','ok');
+  say('writeMsg', t.savedLong, 'ok');
   setTimeout(() => clear('writeMsg'), 4000);
   loadRecent();
 };
@@ -375,14 +492,15 @@ const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
 let rec = null, listening = false;
 
 $('mic').onclick = () => {
-  if (!SR) return say('voiceMsg','This browser cannot do speech recognition. Chrome or Edge will work.','err');
+  if (!SR) return say('voiceMsg', t.noSpeech, 'err');
   if (listening){ rec.stop(); return; }
 
   rec = new SR();
-  rec.continuous = true; rec.interimResults = true; rec.lang = 'en-US';
+  rec.continuous = true; rec.interimResults = true;
+  rec.lang = lang === 'es' ? 'es-MX' : 'en-US';
   let settled = '';
 
-  rec.onstart = () => { listening = true; $('mic').classList.add('live'); say('voiceMsg','Listening…','work'); };
+  rec.onstart = () => { listening = true; $('mic').classList.add('live'); say('voiceMsg', t.listening); };
   rec.onresult = e => {
     let interim = '';
     for (let i = e.resultIndex; i < e.results.length; i++){
@@ -393,24 +511,22 @@ $('mic').onclick = () => {
   };
   rec.onerror = e => {
     listening = false; $('mic').classList.remove('live');
-    say('voiceMsg', e.error === 'not-allowed'
-      ? 'Microphone access was blocked. Allow it in your browser settings and try again.'
-      : `Microphone error: ${e.error}`, 'err');
+    say('voiceMsg', e.error === 'not-allowed' ? t.micBlocked : t.micErr(e.error), 'err');
   };
   rec.onend = () => { listening = false; $('mic').classList.remove('live'); clear('voiceMsg'); };
   rec.start();
 };
 
 $('voiceSave').onclick = async () => {
-  const t = $('voiceText').value.trim();
-  if (!t) return say('voiceMsg','Nothing recorded yet.','err');
+  const v = $('voiceText').value.trim();
+  if (!v) return say('voiceMsg', t.nothingRec, 'err');
   if (listening) rec.stop();
-  busy('voiceSave', true, 'Saving…');
-  const err = await save(t, 'voice');
+  busy('voiceSave', true);
+  const err = await save(v, 'voice');
   busy('voiceSave', false);
   if (err) return say('voiceMsg', err.message, 'err');
   $('voiceText').value = '';
-  say('voiceMsg','Saved.','ok');
+  say('voiceMsg', t.savedShort, 'ok');
   loadRecent();
 };
 
@@ -419,21 +535,19 @@ $('voiceSave').onclick = async () => {
 // ===========================================================================
 $('ytGo').onclick = async () => {
   const url = $('ytUrl').value.trim();
-  if (!url) return say('ytMsg','Paste a YouTube link first.','err');
-  busy('ytGo', true, 'Fetching…');
-  say('ytMsg','Fetching the transcript and summarising. This takes 15–40 seconds.','work');
+  if (!url) return say('ytMsg', t.pasteYt, 'err');
+  busy('ytGo', true, t.fetching);
+  say('ytMsg', t.ytWorking);
   const r = await fn('capture-youtube', { url });
   busy('ytGo', false);
-  if (!r.ok) return say('ytMsg', r.error || 'Could not capture that video.', 'err');
+  if (!r.ok) return say('ytMsg', r.error || t.ytFail, 'err');
   $('ytUrl').value = '';
-  say('ytMsg',
-    `Saved: ${r.title}` + (r.has_transcript ? '' : ' (no captions on this video — summarised from its description)'),
-    'ok');
+  say('ytMsg', r.title + (r.has_transcript ? '' : t.noCaptions), 'ok');
   loadRecent();
 };
 
 // ===========================================================================
-// PDF  — read in the browser, nothing uploaded
+// PDF — read in the browser, nothing uploaded
 // ===========================================================================
 $('drop').onclick = () => $('pdfFile').click();
 $('drop').ondragover = e => { e.preventDefault(); $('drop').classList.add('over'); };
@@ -446,41 +560,37 @@ $('pdfFile').onchange = e => { if (e.target.files[0]) readPdf(e.target.files[0])
 
 let pdfName = '';
 async function readPdf(file){
-  if (file.type !== 'application/pdf') return say('pdfMsg','That is not a PDF.','err');
+  if (file.type !== 'application/pdf') return say('pdfMsg', t.notPdf, 'err');
   pdfName = file.name;
-  say('pdfMsg', `Reading ${file.name}…`, 'work');
+  say('pdfMsg', t.pdfReading(file.name));
   try {
     const buf = await file.arrayBuffer();
     const doc = await pdfjsLib.getDocument({ data: buf }).promise;
     let out = '';
     for (let p = 1; p <= doc.numPages; p++){
-      say('pdfMsg', `Reading page ${p} of ${doc.numPages}…`, 'work');
+      say('pdfMsg', t.pdfPage(p, doc.numPages));
       const page = await doc.getPage(p);
       const content = await page.getTextContent();
       out += content.items.map(i => i.str).join(' ') + '\n\n';
     }
     const text = out.replace(/[ \t]+/g,' ').replace(/\n{3,}/g,'\n\n').trim();
-    if (text.length < 50){
-      return say('pdfMsg',
-        'Almost no text found. This is probably a scanned PDF — an image of a page rather than real text. ' +
-        'It would need OCR software first.', 'err');
-    }
+    if (text.length < 50) return say('pdfMsg', t.pdfScanned, 'err');
     $('pdfText').value = text;
-    say('pdfMsg', `Read ${doc.numPages} page${doc.numPages===1?'':'s'}. Review it, then save.`, 'ok');
+    say('pdfMsg', t.pdfDone(doc.numPages), 'ok');
   } catch (err) {
-    say('pdfMsg', `Could not read that PDF: ${err.message}`, 'err');
+    say('pdfMsg', t.pdfFail(err.message), 'err');
   }
 }
 
 $('pdfSave').onclick = async () => {
-  const t = $('pdfText').value.trim();
-  if (!t) return say('pdfMsg','Nothing to save yet.','err');
-  busy('pdfSave', true, 'Saving…');
-  const err = await save(`📄 ${pdfName || 'Document'}\n\n${t}`, 'pdf', { filename: pdfName });
+  const v = $('pdfText').value.trim();
+  if (!v) return say('pdfMsg', t.nothingYet, 'err');
+  busy('pdfSave', true);
+  const err = await save(`📄 ${pdfName || 'Document'}\n\n${v}`, 'pdf', { filename: pdfName });
   busy('pdfSave', false);
   if (err) return say('pdfMsg', err.message, 'err');
   $('pdfText').value = ''; pdfName = '';
-  say('pdfMsg','Saved.','ok');
+  say('pdfMsg', t.savedShort, 'ok');
   loadRecent();
 };
 
@@ -489,14 +599,14 @@ $('pdfSave').onclick = async () => {
 // ===========================================================================
 $('urlGo').onclick = async () => {
   const url = $('urlInput').value.trim();
-  if (!url) return say('urlMsg','Paste a link first.','err');
-  busy('urlGo', true, 'Fetching…');
-  say('urlMsg','Fetching the page and summarising…','work');
+  if (!url) return say('urlMsg', t.pasteUrl, 'err');
+  busy('urlGo', true, t.fetching);
+  say('urlMsg', t.urlWorking);
   const r = await fn('capture-url', { url });
   busy('urlGo', false);
-  if (!r.ok) return say('urlMsg', r.error || 'Could not capture that page.', 'err');
+  if (!r.ok) return say('urlMsg', r.error || t.urlFail, 'err');
   $('urlInput').value = '';
-  say('urlMsg', `Saved: ${r.title}`, 'ok');
+  say('urlMsg', r.title, 'ok');
   loadRecent();
 };
 
@@ -509,30 +619,22 @@ $('q').addEventListener('keydown', e => { if (e.key === 'Enter') runSearch(); })
 async function runSearch(){
   const q = $('q').value.trim();
   if (!q) return;
-  busy('searchGo', true, 'Searching…');
-  say('searchMsg','Searching by meaning…','work');
+  busy('searchGo', true, t.searching);
+  say('searchMsg', t.searching);
   $('searchOut').innerHTML = '';
 
-  // The server does the searching — it holds the AI key needed to turn this
-  // phrase into a meaning fingerprint. It falls back to keyword matching on
-  // its own if that is unavailable.
   const r = await fn('search-brain', { query: q, limit: 20 });
 
   busy('searchGo', false);
-  if (!r.ok){ return say('searchMsg', r.error || 'Search failed.', 'err'); }
+  if (!r.ok) return say('searchMsg', r.error || t.searchFail, 'err');
   clear('searchMsg');
 
   if (!r.results?.length){
-    $('searchOut').innerHTML = `<div class="empty">Nothing matches "${escapeHtml(q)}" yet.</div>`;
+    $('searchOut').innerHTML = `<div class="empty">${escapeHtml(t.noMatch(q))}</div>`;
     return;
   }
-
-  const label = r.mode === 'semantic'
-    ? `${r.count} result${r.count===1?'':'s'} — matched by meaning`
-    : `${r.count} result${r.count===1?'':'s'} — matched by keyword`;
-
-  $('searchOut').innerHTML =
-    `<div class="count">${label}</div>` + r.results.map(render).join('');
+  const label = r.mode === 'semantic' ? t.byMeaning(r.count) : t.byKeyword(r.count);
+  $('searchOut').innerHTML = `<div class="count">${label}</div>` + r.results.map(render).join('');
 }
 
 // ===========================================================================
@@ -545,39 +647,33 @@ async function loadRecent(){
     .limit(25);
 
   if (error){ $('recentOut').innerHTML = `<div class="empty">${escapeHtml(error.message)}</div>`; return; }
-
-  $('recentCount').textContent = count
-    ? `${count} thought${count===1?'':'s'} in your brain`
-    : '';
-
+  $('recentCount').textContent = count ? t.count(count) : '';
   $('recentOut').innerHTML = data?.length
     ? data.map(render).join('')
-    : `<div class="empty">Nothing saved yet.<br>Use the Write tab to add your first thought.</div>`;
+    : `<div class="empty">${t.emptyBrain}</div>`;
 }
 
-// ---------- rendering ----------
 function escapeHtml(s){
   return String(s).replace(/[&<>"']/g, c =>
     ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 }
 
-function render(t){
-  const when = new Date(t.created_at).toLocaleString(undefined,
+function render(x){
+  const when = new Date(x.created_at).toLocaleString(lang === 'es' ? 'es-MX' : undefined,
     { month:'short', day:'numeric', hour:'numeric', minute:'2-digit' });
   const badges = [];
-  if (t.source && t.source !== 'text') badges.push(`<span class="badge">${escapeHtml(t.source)}</span>`);
-  if (t.category) badges.push(`<span class="badge">${escapeHtml(t.category)}</span>`);
-  if (typeof t.similarity === 'number')
-    badges.push(`<span class="badge sim">${Math.round(t.similarity*100)}% match</span>`);
-  const tags = t.tags?.length
-    ? `<div class="tags">${t.tags.map(x => '#' + escapeHtml(x)).join(' ')}</div>` : '';
+  if (x.source && x.source !== 'text') badges.push(`<span class="badge">${escapeHtml(x.source)}</span>`);
+  if (x.category) badges.push(`<span class="badge">${escapeHtml(x.category)}</span>`);
+  if (typeof x.similarity === 'number')
+    badges.push(`<span class="badge sim">${Math.round(x.similarity*100)}%</span>`);
+  const tags = x.tags?.length
+    ? `<div class="tags">${x.tags.map(v => '#' + escapeHtml(v)).join(' ')}</div>` : '';
   return `<div class="thought">
       <div class="meta"><span>${when}</span>${badges.join('')}</div>
-      <div class="body">${escapeHtml(t.content)}</div>${tags}
+      <div class="body">${escapeHtml(x.content)}</div>${tags}
     </div>`;
 }
 
-// ---------- offline support ----------
 if ('serviceWorker' in navigator){
   navigator.serviceWorker.register('sw.js').catch(() => {});
 }

@@ -1,5 +1,11 @@
 # Open Brain — Express
 
+> 🇲🇽 **¿Español?** Empieza en **[Sesión 1 — Cuentas](Sesion-1-Cuentas.md)**.
+> Todo el curso está en español: [Sesión 2](Sesion-2-Construir.md) ·
+> [Sesión 2b](Sesion-2b-Telegram.md) · [Sesión 3](Sesion-3-Conectar.md).
+> La aplicación detecta tu idioma sola, y tiene un botón EN/ES por si acaso.
+
+
 A personal knowledge base you own. Save anything worth remembering — typed
 notes, spoken thoughts, YouTube videos, PDFs, web articles — and it works out
 what each thing is about and connects related ideas together on its own. Then
