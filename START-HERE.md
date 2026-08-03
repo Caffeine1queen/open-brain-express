@@ -1,149 +1,215 @@
-# Start here
+# Start here · Empieza aquí
 
-*[Versión en español: EMPIEZA-AQUI.md](EMPIEZA-AQUI.md)*
+**Copy the block below. Paste it into Claude. Press enter.**
+**Copia el bloque de abajo. Pégalo en Claude. Presiona Enter.**
 
----
-
-## Step 0 — You need three things installed
-
-This is the only part that cannot be automated, because these are programs that
-have to exist before Claude can help you. About 15 minutes, once ever.
-
-**If you have done this before, skip to Step 1.**
-
-### 1. Claude Code
-[claude.ai/download](https://claude.ai/download) — download, install, sign in.
-This is the app that will build everything.
-
-You need a Claude subscription (Pro or Max) to use it.
-
-### 2. Node.js
-[nodejs.org](https://nodejs.org) — download the version marked **LTS**. Install
-it accepting all the defaults.
-
-### 3. Git
-[git-scm.com/downloads](https://git-scm.com/downloads) — install accepting all
-the defaults.
-
-*(On a Mac, typing `git --version` in Terminal often installs it for you.)*
-
-### Check it worked
-
-Open a command window:
-- **Windows:** press Start, type `PowerShell`, Enter
-- **Mac:** press Cmd+Space, type `Terminal`, Enter
-
-Type these two lines, one at a time. You want version numbers, not errors:
-
-```bash
-git --version
-```
-
-```bash
-node --version
-```
-
-If both answer with a number, you are set. If either errors, reinstall that one
-and try again.
+That is the only instruction. Claude asks your language first, works out what
+you already have, and takes it from there.
+*Esa es la única instrucción. Claude te pregunta tu idioma, revisa qué ya
+tienes, y de ahí sigue solo.*
 
 ---
 
-## Step 1 — One prompt
+### Where do I paste it? · ¿Dónde lo pego?
 
-**Open Claude Code, pick or create a folder (the Desktop is fine), copy the
-whole block below, paste it, press Enter.**
+**Either works.** *Cualquiera de los dos funciona.*
 
-That is the only thing you need to do to begin. Claude handles the rest and will
-ask you for whatever it needs.
+- **Claude Code** (the desktop app) — best, it can do the work for you
+- **claude.ai** in a browser — also fine to start. It will help you install what
+  you need, then tell you when to switch.
+
+*Claude Code (la aplicación) es lo mejor porque puede hacer el trabajo por ti.
+claude.ai en el navegador también sirve para empezar: te ayuda a instalar lo que
+falte y te avisa cuándo cambiarte.*
+
+**You do not need anything installed to begin.**
+*No necesitas tener nada instalado para empezar.*
+
+---
 
 ```
-Hello. You are going to walk me through building my Open Brain today.
+Your very first message must be ONLY this — nothing else, no greeting before it:
 
-WHO I AM: I am not technical. Do not assume what I already have installed or
-which accounts already exist — check, and ask me. I might have everything, I
-might have nothing, I might have done some of it weeks ago and forgotten.
+"👋 Welcome / Bienvenido
 
-HOW I WANT YOU TO WORK WITH ME:
+Choose your language / Elige tu idioma:
+1 — English
+2 — Español"
+
+Wait for their answer. Then conduct the ENTIRE rest of this session in the
+language they chose — every explanation, every question, every error you
+translate for them. Only commands and code stay in English.
+
+=== WHO YOU ARE WORKING WITH ===
+
+Someone who is not technical and wants to build their Open Brain: a personal
+knowledge base that belongs to them. They save notes, voice, YouTube videos,
+PDFs and articles into it; it works out what each thing is about and connects
+related ideas; and at the end Claude can read all of it.
+
+Do not assume anything about what they have. They might have every tool and
+account already, they might have nothing, or they might have set some of it up
+weeks ago and forgotten. Check, and ask.
+
+=== HOW TO WORK WITH THEM ===
 
 - Talk like a person. No jargon unless you explain it immediately.
-- Do the work yourself. Do not explain at length what you are about to do —
-  do it, then tell me what happened, in one line.
-- When you need something from me, ask for ONE thing and wait.
-- Tell me early, and mean it, that I can ask you anything at any point — what a
-  word means, what you just did, whether something is safe. Learning to ask you
-  is the actual point of this exercise.
-- If I go quiet for several steps, check whether I am following.
-- If I paste an error or a screenshot, treat it as completely normal.
-- NEVER repeat a key or password of mine back into the chat. Put it where it
+- Do the work yourself wherever you can. Do not explain at length what you are
+  about to do — do it, then say what happened in one line.
+- Ask for ONE thing at a time, then wait.
+- Early on, tell them plainly and sincerely: they can ask you anything at any
+  point — what a word means, what you just did, whether something is safe.
+  Learning to ask you is the actual point of the exercise, more than the
+  software. Say this in their language.
+- If they go quiet for several steps, check whether they are following.
+- If they paste an error or a screenshot, treat it as completely normal. Never
+  imply they should have known something.
+- NEVER repeat a key, token or password back into the chat. Put it where it
   belongs and say "saved", nothing more.
 
 YOU ARE AUTHORISED TO REPAIR: if a command fails, read the error, work out the
-cause, fix the file, and try again. Do not stop and ask me what to do — I will
-not know. Only stop if you have tried twice and are genuinely stuck, and then
-explain it to me in plain language.
+cause, fix the file, and try again. Do not stop and ask them what to do — they
+will not know. Only stop if you have tried twice and are genuinely stuck, and
+then explain the problem in plain language in their chosen language.
 
-=== WHAT WE ARE DOING TODAY ===
+=== FIRST, WORK OUT WHERE YOU ARE RUNNING ===
 
-Building a personal knowledge base that belongs to me: a web app where I save
-notes, voice, YouTube videos, PDFs and articles; a database that is mine; and at
-the end, Claude Desktop reading everything I have saved.
+Check whether you are able to run terminal commands and read and write files.
 
-=== START LIKE THIS ===
+IF YOU CAN (you are Claude Code): run things yourself. Only ask them to do
+things that genuinely require a human — clicking in a browser, creating
+accounts, reading their own email.
 
-STEP 1 — Check what I already have. Run these and tell me the result:
+IF YOU CANNOT (you are claude.ai in a browser): you can still do the whole first
+half. Ask them to run commands and paste the results back to you. Guide them
+through installing what is missing and creating their accounts. When it is time
+to actually build — Step 5 below — tell them clearly:
+
+  "This next part needs Claude Code, the desktop app, because it has to create
+   files on your computer. Open Claude Code, choose a folder, and paste this
+   same prompt into it. It will pick up where we left off."
+
+Do not attempt to talk them through the build by hand in a browser. It is long
+and it will not go well.
+
+=== STEP 1 — WHAT IS ALREADY INSTALLED ===
+
+Find out whether they have these. Either run the commands yourself, or have them
+open a terminal and paste the results.
+
+  Windows: press Start, type PowerShell, press Enter
+  Mac: press Cmd+Space, type Terminal, press Enter
+
   git --version
   node --version
 
-If either fails, help me install it before continuing.
+Anything missing, walk them through installing it:
+  - Node.js: nodejs.org — the version marked LTS, accept all defaults
+  - Git: git-scm.com/downloads — accept all defaults
+    (On Mac, typing `git --version` often triggers the installer by itself)
 
-STEP 2 — Ask me, one at a time, which of these accounts I already have:
+After installing, they must close and reopen the terminal before it shows up.
+That trips people up constantly — say it before they hit it.
+
+Also ask whether they have Claude Code installed (claude.ai/download). They will
+need it for the build even if you are talking to them in a browser right now.
+
+=== STEP 2 — ACCOUNTS ===
+
+Ask, one at a time, which of these they already have:
   GitHub, Supabase, Vercel, OpenRouter, Claude Desktop
 
-STEP 3 — Help me create ONLY what is missing. The full instructions are here,
-read them before guiding me:
-  https://raw.githubusercontent.com/King-Tuerto/open-brain-express/main/Session-1-Accounts.md
+Then help them create only what is missing. The full instructions are here —
+read the file before guiding them, and use the version matching their language:
 
-Pay particular attention to three things in that document:
-  - I need to "fork" the repository to my own GitHub account
-  - "Confirm email" must be switched OFF in Supabase (Authentication -> Sign In
-    / Providers -> Email), or I will not be able to log in to my own app
-  - The OpenRouter key is the only part that costs money. Explain properly what
-    it is and what it will cost me before I put a card in.
+  English: https://raw.githubusercontent.com/King-Tuerto/open-brain-express/main/Session-1-Accounts.md
+  Español: https://raw.githubusercontent.com/King-Tuerto/open-brain-express/main/Sesion-1-Cuentas.md
 
-STEP 4 — Once I have everything, clone MY fork (not the original) and go into
-the folder:
-  git clone https://github.com/MY_USERNAME/open-brain-express
+Four things in there matter more than the rest:
+
+  1. They must FORK github.com/King-Tuerto/open-brain-express to their own
+     GitHub account. Everything later assumes they own their copy.
+
+  2. "Confirm email" must be switched OFF in Supabase, under
+     Authentication -> Sign In / Providers -> Email. If they skip this they
+     cannot log in to their own app later, and the error will not explain why.
+
+  3. OpenRouter is the only part that costs money. Before they enter a card,
+     explain properly: it is an AI key their software uses, their Claude
+     subscription does NOT cover it, and $5-$10 will most likely last months.
+     Do not rush them past this.
+
+  4. Supadata is optional. Skipping it is fine — YouTube still works.
+
+=== STEP 3 — CHECKPOINT ===
+
+Before going further, confirm all of these are true:
+  - git and node both answer with version numbers
+  - Claude Code is installed
+  - They can log in to GitHub, Supabase, Vercel
+  - They forked the repository to their own account
+  - "Confirm email" is off in Supabase
+  - They have their OpenRouter key (starts with sk-or-)
+
+If you are in a browser, this is where you hand off. Tell them to open Claude
+Code and paste this same prompt.
+
+=== STEP 4 — GET THEIR COPY ===
+
+  git clone https://github.com/THEIR_USERNAME/open-brain-express
   cd open-brain-express
 
-STEP 5 — Open the file Session-2-Build.md inside that folder, follow its
-instructions exactly, and build my brain.
+Their fork, not the original.
 
-When Session 2 is done, continue with Session-3-Connect.md.
+=== STEP 5 — BUILD IT ===
 
-Note: always use `npx supabase` for Supabase commands. Do NOT use
-`npm install -g supabase` — Supabase removed support for global installs and
-that command fails.
+Inside that folder, open the build instructions in their language and follow
+them exactly:
 
-Start by greeting me and telling me what we are going to do.
+  English: Session-2-Build.md
+  Español: Sesion-2-Construir.md
+
+That file contains everything: the database, the app, the deploys, the checks.
+Work through it in order. Do not skip the verification steps at the end.
+
+When it is done, continue with Session-3-Connect.md (or Sesion-3-Conectar.md) to
+connect Claude Desktop and fill their brain with real content.
+
+Session-2b-Telegram.md (or Sesion-2b-Telegram.md) is optional and can be done
+any time afterwards.
+
+=== ONE TECHNICAL WARNING ===
+
+Always use `npx supabase` for Supabase commands. Do NOT run
+`npm install -g supabase` — Supabase removed support for global npm installs and
+that command now fails with a confusing error.
+
+=== NOW BEGIN ===
+
+Send the language question. Nothing else.
 ```
 
 ---
 
-## How long does it take?
+## How long · Cuánto tarda
 
 | | |
 |---|---|
-| Step 0 (installing) | ~15 min, once ever |
-| Accounts | 20–40 min |
-| The build | 45–90 min, mostly waiting |
-| Connecting Claude and filling the brain | ~90 min |
+| Installing what's missing · Instalar lo que falte | ~15 min |
+| Accounts · Cuentas | 20–40 min |
+| The build · La construcción | 45–90 min, mostly waiting |
+| Claude + filling the brain · Claude y llenar el cerebro | ~90 min |
 
-You do not have to do it all in one day. You can stop after Session 2 and pick
-it up later — what you built stays built.
+You can stop after the build and come back another day — what you built stays
+built. *Puedes parar después de la construcción y seguir otro día — lo que
+construiste se queda ahí.*
 
 ---
 
-## If something is unclear
+## If anything is unclear · Si algo no te queda claro
 
-Paste that same question at Claude. Genuinely. That is what you are supposed to
-do, and it is the most valuable thing you will take away from any of this.
+Paste that same question at Claude. Genuinely — that is the most valuable habit
+you will take away from this, more than the software.
+
+*Pégale esa misma pregunta a Claude. En serio — ese es el hábito más valioso que
+te vas a llevar de todo esto, más que el software.*
