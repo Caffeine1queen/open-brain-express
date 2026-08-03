@@ -159,14 +159,54 @@ DO NOT try to set SUPABASE_URL, SUPABASE_ANON_KEY, or SUPABASE_SERVICE_ROLE_KEY
 as secrets. Supabase reserves the `SUPABASE_` prefix and will reject them. Those
 three are provided to your functions automatically.
 
+=== STEP 4b — CHOOSE THEIR MODEL, DO NOT INHERIT IT ===
+
+The code ships with a default model, but a name written into a file months ago
+is a guess about today. Spend two minutes getting this right — it decides both
+what their brain costs and how well it tags things.
+
+1. Find out what is current. If you have web access, look up OpenRouter's model
+   list and pricing now. If you do not, say so plainly rather than guessing, and
+   recommend from what you know while telling them it may be out of date.
+
+2. Ask them two questions, in their language, and wait:
+     - "Roughly how many things a week do you think you'll save? A handful, a
+        few dozen, or a lot?"
+     - "Will you be capturing many YouTube videos and long articles, or mostly
+        short notes?"
+
+3. Recommend accordingly and explain the trade in one sentence. What matters:
+     - The chat model runs on EVERY save, so cheap and fast beats clever. A
+       small model is almost always the right answer for tagging and summarising.
+     - Long videos and articles cost more per item because there is more text
+       going in.
+     - The embedding model must output 1536 numbers or the database will reject
+       it. Do not change that one unless you also change the migration.
+
+4. Give them a real monthly estimate based on their answers and the current
+   prices. An actual number, not "it's cheap". Then tell them the app shows what
+   they have really spent, so they can check rather than trust it.
+
+5. Set their choice:
+
+     npx supabase secrets set LLM_MODEL=whatever-you-recommended
+
+   (Leave EMBEDDING_MODEL alone unless you have a specific reason.)
+
+6. Point out what just happened, because it is the whole design in one action:
+   the model their brain runs on is one setting, in one place. Switching to a
+   different AI later — a newer model, a different company, something that does
+   not exist yet — is changing that line. No code changes anywhere.
+
 === STEP 5 — DEPLOY THE EDGE FUNCTIONS ===
 
-Deploy these four normally:
+Deploy these five normally:
 
   npx supabase functions deploy enrich-thought
   npx supabase functions deploy capture-youtube
   npx supabase functions deploy capture-url
   npx supabase functions deploy search-brain
+  npx supabase functions deploy weekly-digest
 
 Then deploy the MCP server WITH A DIFFERENT FLAG:
 
@@ -207,6 +247,43 @@ Have them run it in the SQL editor.
 
 Note on `pg_net`: it is what lets the database make outbound web requests. It is
 easy to miss and nothing works without it — the trigger silently does nothing.
+
+Then, in the SAME webhook.sql file, add the weekly digest schedule underneath:
+
+  create extension if not exists pg_cron;
+
+  -- Remove any previous copy first, so running this twice is harmless
+  do $$
+  begin
+    if exists (select 1 from cron.job where jobname = 'weekly-brain-digest') then
+      perform cron.unschedule('weekly-brain-digest');
+    end if;
+  end $$;
+
+  -- Sundays at 08:00 UTC. The five fields are:
+  -- minute hour day-of-month month day-of-week
+  select cron.schedule(
+    'weekly-brain-digest',
+    '0 8 * * 0',
+    $CRON$
+      select net.http_post(
+        url := 'https://THEIR_PROJECT_REF.supabase.co/functions/v1/weekly-digest',
+        headers := '{"Content-Type":"application/json","Authorization":"Bearer THEIR_SERVICE_ROLE_KEY"}'::jsonb,
+        body := '{}'::jsonb
+      );
+    $CRON$
+  );
+
+Tell them what this does, in one sentence: every Sunday morning their brain reads
+back the week and writes them a short report on what they were paying attention
+to — saved into the brain like any other thought.
+
+Mention that 08:00 UTC may not be 8am where they live, and that the comment at
+the bottom of weekly-digest/index.ts explains how to change it. Do not spend
+time on it now.
+
+Confirm both the trigger and the schedule registered:
+  select jobname, schedule from cron.job;
 
 `webhook.sql` contains a secret. Make sure it is in `.gitignore` and never
 committed.
@@ -284,6 +361,34 @@ their actual brain, and it saves them repeating the exercise later.
      select count(*) from thought_links;
    A number greater than zero means the graph is building itself. That is the
    whole system working end to end.
+
+6. Prove the weekly digest works, rather than making them wait until Sunday to
+   find out. Trigger it by hand:
+
+     curl -X POST https://THEIR_PROJECT_REF.supabase.co/functions/v1/weekly-digest ^
+       -H "Content-Type: application/json" ^
+       -H "Authorization: Bearer THEIR_SERVICE_ROLE_KEY" ^
+       -d "{}"
+
+   (Mac/Linux: use \ instead of ^ for line continuation.)
+
+   Two outcomes, and BOTH are a pass (explain this to them in Spanish):
+     - {"ok":true,...,"status":"written"} — a digest was created. Have them look
+       in Recent for it.
+     - {"ok":true,...,"status":"too few"} — correct behaviour. It needs about
+       five captures in a week and they only have a handful so far. The function
+       ran, reached the database, and made the right call. It will write a real
+       one once the brain has content.
+
+   What is NOT a pass: a 401, or a Supabase gateway error. Those mean the
+   Authorization header is wrong, and the Sunday schedule would fail the same
+   silent way.
+
+7. Confirm the schedule is actually registered:
+
+     select jobname, schedule, active from cron.job;
+
+   They should see weekly-brain-digest, '0 8 * * 0', active = true.
 
 === STEP 11 — SAVE THEIR WORK BACK TO GITHUB ===
 

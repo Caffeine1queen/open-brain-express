@@ -204,3 +204,19 @@ por significado, conectado consigo mismo, y legible por la IA que estés usando 
 ese momento.
 
 Ese es todo el punto. Es tuyo.
+
+---
+
+## Una cosa que pasa sin ti
+
+Cada domingo por la mañana tu cerebro relee la semana y te escribe un reporte
+corto — qué te tuvo la atención, los temas que atravesaron todo, y una pregunta
+que parece que traes dando vueltas. Aparece en Recientes como cualquier otro
+pensamiento.
+
+Necesita unas cinco capturas en la semana para molestarse. Si tuviste una semana
+tranquila se queda callado, que es lo correcto.
+
+Está programado a las 08:00 UTC de los domingos, que puede no ser las 8am donde
+vives. Si lo quieres mover, pídeselo a Claude Code — las instrucciones están en
+los comentarios al final de `supabase/functions/weekly-digest/index.ts`.

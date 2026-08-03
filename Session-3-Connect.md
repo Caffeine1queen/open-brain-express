@@ -192,3 +192,18 @@ training: everything *you* found worth keeping, searchable by meaning, connected
 to itself, and readable by whatever AI you happen to be using at the time.
 
 That is the whole idea. It is yours.
+
+---
+
+## One thing that happens without you
+
+Every Sunday morning your brain reads back the week and writes you a short
+report — what held your attention, the themes running through it, and a question
+you seem to be circling. It appears in Recent like any other thought.
+
+It needs about five captures in a week to bother. If you have a quiet week it
+stays quiet, which is the correct behaviour.
+
+The schedule is 08:00 UTC on Sundays, which may not be 8am where you are. If you
+want it moved, ask Claude Code — the instructions are in the comments at the
+bottom of `supabase/functions/weekly-digest/index.ts`.

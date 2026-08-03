@@ -50,7 +50,10 @@ and come back another day — what you built stays built.
   links to them. Things you forgot resurface on their own
 - **Claude reading your brain** in any conversation, through MCP
 - **What it has actually cost you**, shown in the app — not an estimate, the real
-  number, so you never have to take anyone word for it
+  number, so you never have to take anyone's word for it
+- **A weekly report on yourself.** Every Sunday your brain reads back the week
+  and writes you a short summary: what held your attention, what themes ran
+  through it, and the question you appear to be circling
 
 ---
 
@@ -96,6 +99,7 @@ supabase/functions/
   capture-url              Reads any web page server-side
   search-brain             Meaning-based search
   open-brain-mcp           What Claude Desktop talks to
+  weekly-digest            Sunday morning report, run by a schedule in your database
   telegram-bot             Text your brain from your phone (optional)
 ```
 
