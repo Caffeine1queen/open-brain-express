@@ -169,6 +169,8 @@ Deno.serve(async (req) => {
         `Write 3 to 5 short paragraphs. No preamble.\n\n` +
         `Title: "${title}"\nSource: ${parsed.hostname}\n\n${text.slice(0, 14_000)}`,
       maxTokens: 1200,
+      userId: user.id,
+      source: 'capture-url',
     })
 
     const content = summary

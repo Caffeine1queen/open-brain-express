@@ -148,7 +148,7 @@ Deno.serve(async (req) => {
       }
 
       // Meaning-based search first, keyword as backup
-      const embedding = await generateEmbedding(query)
+      const embedding = await generateEmbedding(query, { userId: OWNER_USER_ID, source: 'telegram-bot' })
       let rows: any[] = []
 
       if (embedding) {

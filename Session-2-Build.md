@@ -297,6 +297,9 @@ design and cannot read anything without a login.
 
 Tell them, in plain language:
 - Their brain is live at their Vercel URL
+- The figure in the corner of the app is what the AI has actually cost them
+  this month. Point it out — it is the honest answer to "what will this cost",
+  and it means they never have to take anyone's word for it
 - They can install it on their phone: open the URL in the phone browser and
   choose "Add to Home Screen"
 - Everything they save gets tagged and connected automatically

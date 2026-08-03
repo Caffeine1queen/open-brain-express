@@ -158,6 +158,66 @@ create policy "own_links_delete" on thought_links
 
 
 -- ---------------------------------------------------------------------------
+-- 4b. WHAT THIS COSTS YOU
+--
+-- Every time your brain tags a thought or works out its meaning, it makes a
+-- small paid request to an AI. Each one is a fraction of a cent. This table
+-- records them so the number stops being a promise somebody made you and
+-- becomes something you can look at.
+--
+-- Nothing here can break a save: if writing one of these rows fails, the
+-- thought is already stored and the failure is ignored.
+-- ---------------------------------------------------------------------------
+create table if not exists llm_usage (
+  id                uuid primary key default gen_random_uuid(),
+  user_id           uuid not null references auth.users(id) on delete cascade,
+  kind              text not null default 'chat',   -- chat | embedding
+  model             text,
+  source            text,                            -- which function spent it
+  prompt_tokens     integer default 0,
+  completion_tokens integer default 0,
+  cost_usd          numeric(12,8) default 0,
+  created_at        timestamptz not null default now()
+);
+
+create index if not exists idx_usage_user_time on llm_usage(user_id, created_at desc);
+
+alter table llm_usage enable row level security;
+
+drop policy if exists "own_usage_select" on llm_usage;
+create policy "own_usage_select" on llm_usage
+  for select to authenticated
+  using (auth.uid() = user_id);
+
+-- Spending so far this calendar month, plus an all-time figure.
+create or replace function my_spend()
+returns table (
+  month_usd    numeric,
+  month_calls  bigint,
+  total_usd    numeric,
+  total_calls  bigint
+)
+language plpgsql
+stable
+security definer
+set search_path = public
+as $$
+begin
+  return query
+    select
+      coalesce(sum(u.cost_usd) filter (
+        where u.created_at >= date_trunc('month', now())), 0)::numeric,
+      count(*) filter (
+        where u.created_at >= date_trunc('month', now()))::bigint,
+      coalesce(sum(u.cost_usd), 0)::numeric,
+      count(*)::bigint
+    from llm_usage u
+    where u.user_id = auth.uid();
+end;
+$$;
+
+
+-- ---------------------------------------------------------------------------
 -- 5. SEMANTIC SEARCH
 -- Takes the numeric fingerprint of a search phrase and returns the thoughts
 -- whose meaning is closest to it.

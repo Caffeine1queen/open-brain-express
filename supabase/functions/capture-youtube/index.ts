@@ -234,7 +234,8 @@ async function fromInnertube(videoId: string): Promise<VideoContent | null> {
 async function summarise(
   title: string,
   content: string,
-  hasTranscript: boolean
+  hasTranscript: boolean,
+  userId?: string
 ): Promise<string> {
   const label = hasTranscript ? 'Transcript' : 'Video description'
   const caveat = hasTranscript
@@ -252,6 +253,8 @@ async function summarise(
       `just the substance.${caveat}\n\n` +
       `Video title: "${title}"\n\n${label}:\n${content.slice(0, 12_000)}`,
     maxTokens: 1200,
+    userId,
+    source: 'capture-youtube',
   })
 
   if (summary) return `📹 ${title}\n\n${summary}`
@@ -311,7 +314,7 @@ Deno.serve(async (req) => {
       }, 422)
     }
 
-    const summary = await summarise(title, result.content, result.hasTranscript)
+    const summary = await summarise(title, result.content, result.hasTranscript, user.id)
 
     // Save it. The enrich-thought webhook will pick this up within seconds and
     // add tags, a category, the meaning fingerprint, and graph links.

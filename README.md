@@ -49,6 +49,8 @@ and come back another day — what you built stays built.
 - **A graph that builds itself.** Every new thought finds related older ones and
   links to them. Things you forgot resurface on their own
 - **Claude reading your brain** in any conversation, through MCP
+- **What it has actually cost you**, shown in the app — not an estimate, the real
+  number, so you never have to take anyone word for it
 
 ---
 

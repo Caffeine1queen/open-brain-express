@@ -194,7 +194,7 @@ Deno.serve(async (req) => {
       const limit = Math.min(Number(args.limit) || 8, 25)
       if (!query) return textResult(id, 'No search text was provided.')
 
-      const embedding = await generateEmbedding(query)
+      const embedding = await generateEmbedding(query, { userId: OWNER_USER_ID, source: 'mcp' })
 
       // Semantic search when we can, keyword search when we cannot. Falling
       // back means a temporary embedding outage degrades quality rather than

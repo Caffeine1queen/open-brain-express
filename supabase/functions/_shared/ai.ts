@@ -52,6 +52,56 @@ export function jsonResponse(body: unknown, status = 200): Response {
 
 
 // ---------------------------------------------------------------------------
+// COST LOGGING
+//
+// Records what each AI call cost, so the app can show a real number instead of
+// an estimate.
+//
+// SAFETY RULE: this must never affect anything. It is fired without being
+// awaited and every failure is swallowed. If the logging breaks, or the table
+// does not exist, or the network hiccups, the capture that triggered it still
+// succeeds and the user never sees a thing. Cost visibility is a nice-to-have;
+// saving the thought is not.
+// ---------------------------------------------------------------------------
+function logUsage(entry: {
+  userId?: string
+  kind: 'chat' | 'embedding'
+  model: string
+  source?: string
+  promptTokens?: number
+  completionTokens?: number
+  costUsd?: number
+}): void {
+  if (!entry.userId) return   // nothing to attribute it to
+
+  const url = Deno.env.get('SUPABASE_URL')
+  const key = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')
+  if (!url || !key) return
+
+  // Deliberately not awaited.
+  fetch(`${url}/rest/v1/llm_usage`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'apikey': key,
+      'Authorization': `Bearer ${key}`,
+      'Prefer': 'return=minimal',
+    },
+    body: JSON.stringify({
+      user_id: entry.userId,
+      kind: entry.kind,
+      model: entry.model,
+      source: entry.source ?? null,
+      prompt_tokens: entry.promptTokens ?? 0,
+      completion_tokens: entry.completionTokens ?? 0,
+      cost_usd: entry.costUsd ?? 0,
+    }),
+    signal: AbortSignal.timeout(5000),
+  }).catch(() => { /* deliberately ignored — see safety rule above */ })
+}
+
+
+// ---------------------------------------------------------------------------
 // callLLM — ask the AI a question, get text back.
 //
 // Returns null instead of throwing when something goes wrong. Callers should
@@ -63,6 +113,8 @@ export async function callLLM(opts: {
   systemPrompt?: string
   maxTokens?: number
   timeoutMs?: number
+  userId?: string      // who to bill this to, for the cost display
+  source?: string      // which function spent it
 }): Promise<string | null> {
   if (!OPENROUTER_KEY) {
     console.error('[ai] OPENROUTER_API_KEY is not set — skipping LLM call')
@@ -84,6 +136,9 @@ export async function callLLM(opts: {
         model: CHAT_MODEL,
         messages,
         max_tokens: opts.maxTokens ?? 1024,
+        // Asks OpenRouter to report what this call actually cost, rather than
+        // us guessing from a price list that goes stale.
+        usage: { include: true },
       }),
       signal: AbortSignal.timeout(opts.timeoutMs ?? 30_000),
     })
@@ -100,6 +155,17 @@ export async function callLLM(opts: {
       console.error('[ai] LLM returned no usable text')
       return null
     }
+
+    logUsage({
+      userId: opts.userId,
+      kind: 'chat',
+      model: CHAT_MODEL,
+      source: opts.source,
+      promptTokens: data?.usage?.prompt_tokens ?? 0,
+      completionTokens: data?.usage?.completion_tokens ?? 0,
+      costUsd: Number(data?.usage?.cost ?? 0),
+    })
+
     return text.trim()
   } catch (err) {
     console.error('[ai] LLM call failed:', String(err))
@@ -119,6 +185,8 @@ export async function callLLMForJSON<T = Record<string, unknown>>(opts: {
   prompt: string
   systemPrompt?: string
   maxTokens?: number
+  userId?: string
+  source?: string
 }): Promise<T | null> {
   const raw = await callLLM(opts)
   if (!raw) return null
@@ -159,7 +227,10 @@ export async function callLLMForJSON<T = Record<string, unknown>>(opts: {
 // Long text is trimmed first. Embedding models have an input limit, and the
 // first few thousand characters carry the gist well enough for search.
 // ---------------------------------------------------------------------------
-export async function generateEmbedding(text: string): Promise<number[] | null> {
+export async function generateEmbedding(
+  text: string,
+  attribution?: { userId?: string; source?: string }
+): Promise<number[] | null> {
   if (!OPENROUTER_KEY) {
     console.error('[ai] OPENROUTER_API_KEY is not set — skipping embedding')
     return null
@@ -204,6 +275,15 @@ export async function generateEmbedding(text: string): Promise<number[] | null> 
       )
       return null
     }
+
+    logUsage({
+      userId: attribution?.userId,
+      kind: 'embedding',
+      model: EMBEDDING_MODEL,
+      source: attribution?.source,
+      promptTokens: data?.usage?.prompt_tokens ?? 0,
+      costUsd: Number(data?.usage?.cost ?? 0),
+    })
 
     return embedding as number[]
   } catch (err) {

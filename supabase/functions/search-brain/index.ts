@@ -45,7 +45,7 @@ Deno.serve(async (req) => {
     const admin = createClient(SUPABASE_URL, SERVICE_ROLE_KEY)
 
     // --- meaning-based search ---------------------------------------------
-    const embedding = await generateEmbedding(q)
+    const embedding = await generateEmbedding(q, { userId: user.id, source: 'search-brain' })
     let results: unknown[] = []
     let mode = 'keyword'
 

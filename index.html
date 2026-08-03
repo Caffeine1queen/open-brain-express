@@ -114,6 +114,7 @@
   <header>
     <h1>🧠 Open Brain</h1>
     <div class="status"><span class="dot" id="dot"></span><span id="statusText"></span></div>
+    <span class="status" id="spend" title=""></span>
     <button class="mini" id="langBtn">ES</button>
     <button class="mini" id="signout">sign out</button>
   </header>
@@ -239,6 +240,8 @@ const T = {
     save:'Save to brain', captureVideo:'Capture video', capturePage:'Capture page', search:'Search',
     saving:'Saving…', fetching:'Fetching…', searching:'Searching…',
     savedShort:'Saved.', savedLong:'Saved. Tags and connections are being added now.',
+    spend:(u)=>`$${u.toFixed(2)} this month`, spendZero:'$0.00 this month',
+    spendTitle:'What the AI has cost you this calendar month. Every tag, summary and search adds a fraction of a cent.',
     nothingYet:'Nothing to save yet.', nothingRec:'Nothing recorded yet.',
     emptyBrain:'Nothing saved yet.<br>Use the Write tab to add your first thought.',
     noMatch:q=>`Nothing matches "${q}" yet.`,
@@ -289,6 +292,8 @@ const T = {
     save:'Guardar en el cerebro', captureVideo:'Capturar video', capturePage:'Capturar página', search:'Buscar',
     saving:'Guardando…', fetching:'Obteniendo…', searching:'Buscando…',
     savedShort:'Guardado.', savedLong:'Guardado. Se están agregando las etiquetas y conexiones.',
+    spend:(u)=>`$${u.toFixed(2)} este mes`, spendZero:'$0.00 este mes',
+    spendTitle:'Lo que te ha costado la IA este mes. Cada etiqueta, resumen y búsqueda suma una fracción de centavo.',
     nothingYet:'Todavía no hay nada que guardar.', nothingRec:'Todavía no has grabado nada.',
     emptyBrain:'Todavía no has guardado nada.<br>Usa la pestaña Escribir para tu primer pensamiento.',
     noMatch:q=>`Nada coincide con "${q}" todavía.`,
@@ -444,7 +449,26 @@ async function start(){
   const { error } = await sb.from('thoughts').select('id', { count:'exact', head:true });
   if (error){ $('dot').className='dot off'; $('statusText').textContent=t.dbError; }
   else { $('dot').className='dot on'; $('statusText').textContent=t.connected; }
+  loadSpend();
   loadRecent();
+}
+
+// ===========================================================================
+// WHAT IT HAS COST
+// Reads the real total from the database rather than estimating. If anything
+// goes wrong here it stays silent — a missing cost figure must never look like
+// a broken app.
+// ===========================================================================
+async function loadSpend(){
+  try {
+    const { data, error } = await sb.rpc('my_spend');
+    if (error || !data) return;
+    const row = Array.isArray(data) ? data[0] : data;
+    const usd = Number(row?.month_usd ?? 0);
+    const el = $('spend');
+    el.textContent = usd > 0 ? t.spend(usd) : t.spendZero;
+    el.title = t.spendTitle;
+  } catch { /* silent by design */ }
 }
 
 // ===========================================================================

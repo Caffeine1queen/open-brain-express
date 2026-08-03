@@ -98,6 +98,8 @@ Deno.serve(async (req) => {
           `}\n\n` +
           `Thought:\n${content.slice(0, 6000)}`,
         maxTokens: 400,
+        userId,
+        source: 'enrich-thought',
       })
 
       if (enrichment) {
@@ -126,7 +128,7 @@ Deno.serve(async (req) => {
     // ---------------------------------------------------------------------
     // STEP 2 — the meaning fingerprint
     // ---------------------------------------------------------------------
-    const embedding = await generateEmbedding(content)
+    const embedding = await generateEmbedding(content, { userId, source: 'enrich-thought' })
     if (!embedding) {
       console.log(`[enrich] ${thoughtId}: no embedding — thought will not be searchable by meaning yet`)
     }
