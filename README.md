@@ -1,6 +1,7 @@
 # Open Brain — Express
 
-> 🚀 **¿Empezando ahora? / Starting now?** Todo lo que necesitas es un solo prompt: **[EMPIEZA-AQUI.md](EMPIEZA-AQUI.md)**
+> 🚀 **New here?** Everything you need is one prompt — **[START-HERE.md](START-HERE.md)**
+> · 🇲🇽 **¿Empiezas ahora?** Un solo prompt — **[EMPIEZA-AQUI.md](EMPIEZA-AQUI.md)**
 
 > 🇲🇽 **¿Español?** Empieza en **[Sesión 1 — Cuentas](Sesion-1-Cuentas.md)**.
 > Todo el curso está en español: [Sesión 2](Sesion-2-Construir.md) ·
