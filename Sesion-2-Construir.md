@@ -127,6 +127,60 @@ Then confirm `.env.local` is listed in `.gitignore` — if there is no
 Edit `config.js`, replacing the two placeholders with their real Supabase URL
 and publishable key.
 
+=== FIRST — ARE THEY UPGRADING AN EXISTING BRAIN? ===
+
+Ask before running anything: "Have you built an Open Brain before — did you go
+through the seven-level course, or do you already have a Supabase project with
+thoughts saved in it?"
+
+IF NO — brand new project — carry on normally, ignore the rest of this section.
+
+IF YES — this is an upgrade, and you need to handle it deliberately:
+
+  1. Tell them plainly what is about to happen and what is not:
+     "Your thoughts are safe. Nothing here deletes anything. What this does is
+      add the pieces you don't have yet — logins, meaning-based search, the
+      connection graph — to the brain you already built."
+
+  2. Before touching anything, have them note how many thoughts they have:
+       select count(*) from thoughts;
+     Write the number down. You will check it again at the end. This is as much
+     for their nerves as for correctness.
+
+  3. Run migration.sql as normal. It is written to be safe on an existing brain:
+     it adds only what is missing and leaves their rows alone.
+
+  4. WARN THEM ABOUT THE GAP, BEFORE IT HAPPENS, or they will think they have
+     lost everything:
+     "For the next few minutes your thoughts will look like they have vanished
+      from the app. They have not. The database now only shows rows that belong
+      to a logged-in person, and your old thoughts were saved before logins
+      existed, so they belong to nobody yet. You'll claim them in two steps."
+
+  5. Continue through the build to Step 8, where they create their login.
+
+  6. IMMEDIATELY AFTER Step 8, run the claim statements in section 5 of
+     migration.sql, using the email they just signed up with. Then have them
+     refresh — everything comes back.
+
+  7. Re-run `select count(*) from thoughts;` and confirm it matches the number
+     from step 2, plus whatever they saved in between.
+
+  8. Offer to backfill: their old thoughts have no tags and no meaning
+     fingerprint, so they will not appear in meaning-based search until they do.
+     Write a short script that walks the rows where enriched_at is null and
+     posts each id to the enrich-thought function. Warn them it costs a fraction
+     of a cent per thought and takes a few minutes for a few hundred.
+
+  9. Their old app is still deployed at their old Vercel URL and still points at
+     the same database — but it does not know how to log in, so it will show
+     nothing. Tell them to use the new URL and ignore the old one. They can
+     delete the old Vercel project whenever they like.
+
+Do NOT skip step 4. Someone watching their entire knowledge base disappear from
+the screen, having been through a seven-level course to build it, will not wait
+calmly for an explanation.
+
 === STEP 3 — SET UP THE DATABASE ===
 
 Run the contents of `migration.sql` against their database.

@@ -4,9 +4,12 @@
 -- Supabase.com -> your project -> SQL Editor -> New query -> paste -> Run.
 --
 -- This creates everything at once: the thoughts table, login-protected access,
--- semantic search, and the connection graph. Unlike the step-by-step course,
--- nothing here needs to be backfilled later because the full schema exists
--- before the first thought is ever saved.
+-- semantic search, and the connection graph.
+--
+-- SAFE TO RUN ON AN EXISTING BRAIN. If you already built one following the
+-- seven-level course, this adds only what is missing and does not touch a
+-- single thought you have saved. See section 5 for the one extra step you
+-- will need afterwards.
 -- ============================================================================
 
 
@@ -25,27 +28,39 @@ create extension if not exists vector;
 -- user_id ties each row to the person who saved it. That column is what makes
 -- the security policies further down actually work.
 -- ---------------------------------------------------------------------------
+-- Written so it is safe to run on a brand new project OR on a brain you already
+-- built following the seven-level course. If the table already exists, only the
+-- missing pieces get added and nothing you have saved is touched.
 create table if not exists thoughts (
   id          uuid primary key default gen_random_uuid(),
-  user_id     uuid not null references auth.users(id) on delete cascade,
   content     text not null,
-
-  -- where it came from: text | voice | youtube | pdf | url | telegram | digest
-  source      text not null default 'text',
-
-  -- filled in automatically by the enrich-thought function, a few seconds
-  -- after the row is inserted
-  tags        text[] default '{}',
-  category    text,
-  summary     text,
-  embedding   vector(1536),
-  enriched_at timestamptz,
-
-  -- free-form extras: video title, source URL, filename, etc.
-  metadata    jsonb default '{}'::jsonb,
-
   created_at  timestamptz not null default now()
 );
+
+-- Add every column individually rather than assuming the table is new. On a
+-- fresh project these all get created; on an existing brain, only whatever is
+-- missing does.
+alter table thoughts add column if not exists user_id     uuid references auth.users(id) on delete cascade;
+alter table thoughts add column if not exists source      text not null default 'text';
+alter table thoughts add column if not exists tags        text[] default '{}';
+alter table thoughts add column if not exists category    text;
+alter table thoughts add column if not exists summary     text;
+alter table thoughts add column if not exists embedding   vector(1536);
+alter table thoughts add column if not exists enriched_at timestamptz;
+alter table thoughts add column if not exists metadata    jsonb default '{}'::jsonb;
+
+-- NOTE ON user_id: it is deliberately nullable here, not "not null".
+--
+-- If you are upgrading an existing brain, your old thoughts have no owner yet —
+-- they were saved before there was any such thing as logging in. Forcing the
+-- column to be non-null would refuse to add it at all, and the whole script
+-- would fail.
+--
+-- Section 5 below shows you how to claim those old thoughts once you have
+-- created your login. Until you do that, they will not appear in the app: the
+-- security rules only return rows that belong to you, and rows with no owner
+-- belong to nobody. THEY ARE NOT DELETED. They are sitting in the table waiting
+-- to be claimed, and you can see them any time in the Supabase Table Editor.
 
 create index if not exists idx_thoughts_user       on thoughts(user_id);
 create index if not exists idx_thoughts_created    on thoughts(created_at desc);
@@ -64,13 +79,15 @@ create index if not exists idx_thoughts_embedding
 -- ---------------------------------------------------------------------------
 create table if not exists thought_links (
   id                uuid primary key default gen_random_uuid(),
-  user_id           uuid not null references auth.users(id) on delete cascade,
   source_thought_id uuid not null references thoughts(id) on delete cascade,
   target_thought_id uuid not null references thoughts(id) on delete cascade,
   similarity_score  float not null,
-  link_type         text not null default 'semantic',
   created_at        timestamptz not null default now()
 );
+
+-- Same upgrade-safe approach as the thoughts table above
+alter table thought_links add column if not exists user_id   uuid references auth.users(id) on delete cascade;
+alter table thought_links add column if not exists link_type text not null default 'semantic';
 
 -- Block the same link being stored twice in the same direction (A->B)
 create unique index if not exists idx_links_pair
@@ -120,6 +137,14 @@ end $$;
 alter table thoughts      enable row level security;
 alter table thought_links enable row level security;
 
+-- If you are upgrading a brain built with the seven-level course, it had a rule
+-- that let ANYONE with your public key read, change and delete everything.
+-- Remove it. These names cover both versions of that rule.
+drop policy if exists "allow_all" on thoughts;
+drop policy if exists "temporary_open_access" on thoughts;
+drop policy if exists "own_thoughts" on thoughts;
+drop policy if exists "allow_all" on thought_links;
+
 drop policy if exists "own_thoughts_select" on thoughts;
 create policy "own_thoughts_select" on thoughts
   for select to authenticated
@@ -158,7 +183,48 @@ create policy "own_links_delete" on thought_links
 
 
 -- ---------------------------------------------------------------------------
--- 4b. WHAT THIS COSTS YOU
+-- 5. UPGRADING? CLAIM YOUR EXISTING THOUGHTS
+--
+-- SKIP THIS ENTIRELY if this is a brand new brain. It only matters if you had
+-- thoughts saved before you had a login.
+--
+-- Those old thoughts have no owner. The security rules above only return rows
+-- that belong to you, so right now they will not show up in the app. They are
+-- NOT lost — check the Table Editor and you will see them all sitting there.
+--
+-- To claim them:
+--
+--   STEP 1: open your app and create your login first. You cannot own anything
+--           until an account exists.
+--
+--   STEP 2: come back here and run the two statements below.
+--
+-- Check how many are waiting:
+--
+--   select count(*) from thoughts where user_id is null;
+--
+-- Then claim them. Replace the email with the one you just signed up with:
+--
+--   update thoughts
+--   set user_id = (select id from auth.users where email = 'you@example.com')
+--   where user_id is null;
+--
+--   update thought_links
+--   set user_id = (select id from auth.users where email = 'you@example.com')
+--   where user_id is null;
+--
+-- Refresh the app and everything you ever saved is back — now protected by your
+-- login instead of open to anyone who found the address.
+--
+-- Old thoughts will have no tags, category or meaning-fingerprint, because they
+-- were saved before any of that existed. They are still searchable by keyword.
+-- To bring them fully up to date, ask Claude Code: "backfill enrichment and
+-- embeddings for my thoughts that don't have them yet."
+-- ---------------------------------------------------------------------------
+
+
+-- ---------------------------------------------------------------------------
+-- 6. WHAT THIS COSTS YOU
 --
 -- Every time your brain tags a thought or works out its meaning, it makes a
 -- small paid request to an AI. Each one is a fraction of a cent. This table
@@ -218,7 +284,7 @@ $$;
 
 
 -- ---------------------------------------------------------------------------
--- 5. SEMANTIC SEARCH
+-- 7. SEMANTIC SEARCH
 -- Takes the numeric fingerprint of a search phrase and returns the thoughts
 -- whose meaning is closest to it.
 --
@@ -262,7 +328,7 @@ $$;
 
 
 -- ---------------------------------------------------------------------------
--- 6. FIND NEIGHBOURS — used to build the graph
+-- 8. FIND NEIGHBOURS — used to build the graph
 --
 -- VOLATILE, not STABLE, on purpose. This runs immediately after a new thought
 -- is inserted. A STABLE function may read an older snapshot of the table that
@@ -299,7 +365,7 @@ $$;
 
 
 -- ---------------------------------------------------------------------------
--- 7. KEYWORD SEARCH FALLBACK
+-- 9. KEYWORD SEARCH FALLBACK
 -- Used when a thought has no embedding yet (the first few seconds after
 -- saving), or if the embedding service is unavailable.
 -- ---------------------------------------------------------------------------
