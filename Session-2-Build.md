@@ -205,9 +205,16 @@ committed.
 === STEP 7 — PUT THE APP ON THE INTERNET ===
 
   npx vercel login
-  npx vercel --prod
+  npx vercel --prod --yes
 
-Accept the defaults. It is a plain static site — no build step, no framework.
+The --yes flag accepts every default without asking. Without it, Vercel asks
+four interactive questions (scope, link to existing project, directory, build
+settings) and waits. Those prompts are the most likely place this whole build
+stalls, because the answers are all "just take the default".
+
+It is a plain static site — no build step, no framework. If Vercel asks anyway,
+the answers are: their own account, a new project, current directory, and no
+build command.
 When it finishes, Vercel prints a URL. Give it to them and tell them to open it.
 
 They should see a login screen. If they see "config.js still has its placeholder
@@ -318,3 +325,30 @@ Say that to Claude Code and it will check all three.
 ## Next
 
 Open **Session 3** — connecting Claude, and filling your brain up.
+
+---
+
+## The three most likely places this stalls
+
+Not a prediction of failure — just where to look first, so nobody spends twenty
+minutes guessing. Paste any of these at Claude Code and it will know what to do.
+
+**1. Tags never appear on saved thoughts.**
+Everything else works, thoughts save fine, but they stay untagged forever. In
+order of likelihood: no credit on the OpenRouter account · the OpenRouter key
+was mistyped · `pg_net` was not enabled in Step 6 · the trigger's Authorization
+header is wrong. Check the logs at Supabase → Edge Functions → enrich-thought.
+**If the logs are empty, the function never ran** — that means the trigger, not
+the function.
+
+**2. Vercel asks questions instead of deploying.**
+Use `npx vercel --prod --yes`. If it still asks: their own account, a new
+project, current directory, no build command, no output directory.
+
+**3. Login fails on their own app.**
+Almost always "Confirm email" still switched on in Supabase. Authentication →
+Sign In / Providers → Email → uncheck it. The app says this in the error message
+too.
+
+Everything else is ordinary debugging, and Claude Code has been told it is
+allowed to fix things rather than stopping to ask.

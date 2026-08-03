@@ -214,9 +214,16 @@ committed.
 === STEP 7 — PUT THE APP ON THE INTERNET ===
 
   npx vercel login
-  npx vercel --prod
+  npx vercel --prod --yes
 
-Accept the defaults. It is a plain static site — no build step, no framework.
+The --yes flag accepts every default without asking. Without it, Vercel asks
+four interactive questions (scope, link to existing project, directory, build
+settings) and waits. Those prompts are the most likely place this whole build
+stalls, because the answers are all "just take the default".
+
+It is a plain static site — no build step, no framework. If Vercel asks anyway,
+the answers are: their own account, a new project, current directory, and no
+build command.
 When it finishes, Vercel prints a URL. Give it to them and tell them to open it.
 
 They should see a login screen. If they see a message about config.js still
@@ -332,3 +339,33 @@ Abre la **Sesión 3** — conectar Claude y llenar tu cerebro.
 
 *(Opcional: la **Sesión 2b** agrega un bot de Telegram para mandarle mensajes a
 tu cerebro desde el celular. Puedes saltártela si andas corto de tiempo.)*
+
+---
+
+## Los tres lugares donde esto se puede atorar
+
+No es una predicción de que algo va a fallar — solo dónde revisar primero, para
+que nadie pierda veinte minutos adivinando. Pégale cualquiera de estos a Claude
+Code y va a saber qué hacer.
+
+**1. Nunca aparecen las etiquetas en los pensamientos guardados.**
+Todo lo demás funciona, los pensamientos se guardan bien, pero se quedan sin
+etiquetas para siempre. En orden de probabilidad: no hay crédito en la cuenta de
+OpenRouter · la llave de OpenRouter quedó mal escrita · no se activó `pg_net` en
+el Paso 6 · el header de Authorization del trigger está mal. Revisa los registros
+en Supabase → Edge Functions → enrich-thought. **Si los registros están vacíos,
+la función nunca corrió** — eso significa que el problema es el trigger, no la
+función.
+
+**2. Vercel hace preguntas en lugar de desplegar.**
+Usa `npx vercel --prod --yes`. Si aun así pregunta: su propia cuenta, un
+proyecto nuevo, el directorio actual, sin comando de build, sin directorio de
+salida.
+
+**3. No puede entrar a su propia aplicación.**
+Casi siempre es que "Confirm email" sigue activado en Supabase. Authentication →
+Sign In / Providers → Email → desmárcalo. La aplicación también lo dice en el
+mensaje de error.
+
+Todo lo demás es depuración normal, y Claude Code tiene permiso explícito para
+arreglar cosas en lugar de detenerse a preguntar.
