@@ -1,30 +1,42 @@
 # Open Brain — Express
 
-> 🚀 **Start here / Empieza aquí — one prompt, both languages, nothing needs to be installed first:**
-> ### → **[START-HERE.md](START-HERE.md)** ←
-
-> 🇲🇽 **¿Español?** Empieza en **[Sesión 1 — Cuentas](Sesion-1-Cuentas.md)**.
-> Todo el curso está en español: [Sesión 2](Sesion-2-Construir.md) ·
-> [Sesión 2b](Sesion-2b-Telegram.md) · [Sesión 3](Sesion-3-Conectar.md).
-> La aplicación detecta tu idioma sola, y tiene un botón EN/ES por si acaso.
-
-
 A personal knowledge base you own. Save anything worth remembering — typed
 notes, spoken thoughts, YouTube videos, PDFs, web articles — and it works out
 what each thing is about and connects related ideas together on its own. Then
 point Claude at it and it can search everything you have ever saved.
 
-**Three sessions. Most of it happens while you watch.**
+*Una base de conocimiento personal que te pertenece. Todo el proceso está
+disponible en español.*
 
-| | | |
+---
+
+# 🚀 → **[START HERE / EMPIEZA AQUÍ](START-HERE.md)** ←
+
+**There is one prompt. Copy it, paste it into Claude, press enter.**
+It asks your language first, checks what you already have, and takes it from
+there. Works in Claude Code or in claude.ai in a browser. **Nothing needs to be
+installed before you begin.**
+
+*Hay un solo prompt. Cópialo, pégalo en Claude, presiona Enter. Te pregunta tu
+idioma antes que nada. No necesitas tener nada instalado para empezar.*
+
+---
+
+## Everything below is reference
+
+You do not need to read any of it. The prompt above opens these files for you at
+the right moment. They are here so you can look things up later, or see what is
+going to happen before it happens.
+
+| | English | Español |
 |---|---|---|
-| [Session 1](Session-1-Accounts.md) | Accounts and keys | 20–40 min, hands on |
-| [Session 2](Session-2-Build.md) | Claude Code builds it | ~10 min of your input |
-| [Session 2b](Session-2b-Telegram.md) | Text your brain *(optional)* | 20–30 min |
-| [Session 3](Session-3-Connect.md) | Connect Claude, fill your brain | ~90 min, the good part |
+| Accounts and keys | [Session 1](Session-1-Accounts.md) | [Sesión 1](Sesion-1-Cuentas.md) |
+| The build | [Session 2](Session-2-Build.md) | [Sesión 2](Sesion-2-Construir.md) |
+| Telegram *(optional)* | [Session 2b](Session-2b-Telegram.md) | [Sesión 2b](Sesion-2b-Telegram.md) |
+| Claude + filling your brain | [Session 3](Session-3-Connect.md) | [Sesión 3](Sesion-3-Conectar.md) |
 
-**Start with [Session 1](Session-1-Accounts.md)** — and fork this repository
-first, so the copy you build is your own.
+Roughly 3–4 hours end to end, most of it waiting. You can stop after the build
+and come back another day — what you built stays built.
 
 ---
 
