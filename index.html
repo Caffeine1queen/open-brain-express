@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#6366f1">
+<title>My Open Brain</title>
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧠</text></svg>">
+<style>
+  :root{
+    --bg:#0f0f0f; --card:#161616; --card2:#1c1c1c;
+    --line:#2a2a2a; --text:#ededed; --dim:#8a8a8a;
+    --accent:#6366f1; --accent-dim:#4f46e5;
+    --ok:#22c55e; --warn:#f59e0b; --bad:#ef4444;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{
+    background:var(--bg);color:var(--text);
+    font:16px/1.55 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+    -webkit-font-smoothing:antialiased;
+    padding:env(safe-area-inset-top) 0 env(safe-area-inset-bottom);
+  }
+  .wrap{max-width:760px;margin:0 auto;padding:20px 16px 64px}
+
+  /* ---------- login ---------- */
+  #auth{max-width:380px;margin:12vh auto;padding:0 20px;text-align:center}
+  #auth h1{font-size:30px;margin-bottom:6px}
+  #auth p{color:var(--dim);font-size:14px;margin-bottom:26px}
+  #auth input{width:100%;margin-bottom:10px}
+  .auth-toggle{margin-top:16px;font-size:14px;color:var(--dim)}
+  .auth-toggle a{color:var(--accent);cursor:pointer;text-decoration:none}
+
+  /* ---------- header ---------- */
+  header{display:flex;align-items:center;gap:10px;margin-bottom:18px;flex-wrap:wrap}
+  header h1{font-size:22px;flex:1;min-width:150px}
+  .status{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--dim)}
+  .dot{width:8px;height:8px;border-radius:50%;background:var(--warn)}
+  .dot.on{background:var(--ok)} .dot.off{background:var(--bad)}
+  .signout{background:none;border:none;color:var(--dim);font-size:12px;cursor:pointer;padding:4px}
+  .signout:hover{color:var(--text)}
+
+  /* ---------- tabs ---------- */
+  nav{display:flex;gap:4px;overflow-x:auto;margin-bottom:16px;padding-bottom:4px;scrollbar-width:none}
+  nav::-webkit-scrollbar{display:none}
+  nav button{
+    background:var(--card);border:1px solid var(--line);color:var(--dim);
+    padding:9px 15px;border-radius:9px;cursor:pointer;font-size:14px;white-space:nowrap;
+  }
+  nav button.active{background:var(--accent);border-color:var(--accent);color:#fff}
+
+  /* ---------- panels ---------- */
+  .panel{display:none} .panel.active{display:block}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:13px;padding:17px;margin-bottom:13px}
+  .hint{color:var(--dim);font-size:13px;margin-bottom:11px}
+
+  textarea,input[type=text],input[type=email],input[type=password],input[type=url]{
+    width:100%;background:var(--card2);border:1px solid var(--line);color:var(--text);
+    border-radius:9px;padding:12px;font:inherit;font-size:15px;resize:vertical;
+  }
+  textarea:focus,input:focus{outline:none;border-color:var(--accent)}
+  textarea{min-height:110px}
+
+  button.go{
+    background:var(--accent);border:none;color:#fff;padding:11px 20px;
+    border-radius:9px;font-size:15px;font-weight:500;cursor:pointer;margin-top:10px;
+  }
+  button.go:hover{background:var(--accent-dim)}
+  button.go:disabled{opacity:.5;cursor:not-allowed}
+  button.ghost{background:var(--card2);border:1px solid var(--line);color:var(--text)}
+
+  /* ---------- mic ---------- */
+  #mic{
+    width:88px;height:88px;border-radius:50%;border:none;background:var(--accent);
+    color:#fff;font-size:34px;cursor:pointer;display:block;margin:6px auto 14px;
+  }
+  #mic.live{background:var(--bad);animation:pulse 1.4s infinite}
+  @keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.07)}}
+
+  /* ---------- drop zone ---------- */
+  #drop{
+    border:2px dashed var(--line);border-radius:13px;padding:34px 18px;
+    text-align:center;color:var(--dim);cursor:pointer;
+  }
+  #drop.over{border-color:var(--accent);background:rgba(99,102,241,.07)}
+
+  /* ---------- results ---------- */
+  .thought{background:var(--card);border:1px solid var(--line);border-radius:11px;padding:14px;margin-bottom:10px}
+  .thought .meta{font-size:11px;color:var(--dim);margin-bottom:7px;display:flex;gap:7px;flex-wrap:wrap;align-items:center}
+  .badge{background:var(--card2);border:1px solid var(--line);border-radius:5px;padding:1px 7px;font-size:10px}
+  .badge.sim{border-color:var(--accent);color:#a5b4fc}
+  .thought .body{white-space:pre-wrap;word-break:break-word;font-size:14.5px}
+  .thought .tags{margin-top:9px;font-size:11px;color:var(--dim)}
+
+  .msg{padding:11px 13px;border-radius:9px;margin:11px 0;font-size:14px;display:none}
+  .msg.show{display:block}
+  .msg.ok{background:rgba(34,197,94,.11);border:1px solid rgba(34,197,94,.3);color:#86efac}
+  .msg.err{background:rgba(239,68,68,.11);border:1px solid rgba(239,68,68,.3);color:#fca5a5}
+  .msg.work{background:rgba(99,102,241,.11);border:1px solid rgba(99,102,241,.3);color:#a5b4fc}
+
+  .empty{text-align:center;color:var(--dim);padding:34px 16px;font-size:14px}
+  .count{font-size:12px;color:var(--dim);margin-bottom:11px}
+</style>
+</head>
+<body>
+
+<!-- ==================== LOGIN ==================== -->
+<div id="auth">
+  <h1>🧠 Open Brain</h1>
+  <p>Your knowledge. Your database. Your rules.</p>
+  <input type="email" id="email" placeholder="you@example.com" autocomplete="email">
+  <input type="password" id="password" placeholder="password" autocomplete="current-password">
+  <button class="go" id="authBtn" style="width:100%">Sign in</button>
+  <div class="msg" id="authMsg"></div>
+  <div class="auth-toggle">
+    <span id="authSwitchText">No account yet?</span>
+    <a id="authSwitch">Create one</a>
+  </div>
+</div>
+
+<!-- ==================== APP ==================== -->
+<div class="wrap" id="app" style="display:none">
+  <header>
+    <h1>🧠 Open Brain</h1>
+    <div class="status"><span class="dot" id="dot"></span><span id="statusText">connecting…</span></div>
+    <button class="signout" id="signout">sign out</button>
+  </header>
+
+  <nav>
+    <button data-tab="write"  class="active">✏️ Write</button>
+    <button data-tab="voice">🎙️ Voice</button>
+    <button data-tab="youtube">📹 YouTube</button>
+    <button data-tab="pdf">📄 PDF</button>
+    <button data-tab="url">🔗 Link</button>
+    <button data-tab="search">🔍 Search</button>
+    <button data-tab="recent">🕐 Recent</button>
+  </nav>
+
+  <!-- WRITE -->
+  <section class="panel active" id="p-write">
+    <div class="card">
+      <div class="hint">Anything worth remembering. Ctrl+Enter saves.</div>
+      <textarea id="writeText" placeholder="What's on your mind?"></textarea>
+      <button class="go" id="writeSave">Save to brain</button>
+      <div class="msg" id="writeMsg"></div>
+    </div>
+  </section>
+
+  <!-- VOICE -->
+  <section class="panel" id="p-voice">
+    <div class="card">
+      <div class="hint">Speak, review the text, then save. Works best in Chrome or Edge.</div>
+      <button id="mic">🎙️</button>
+      <textarea id="voiceText" placeholder="Your words will appear here…"></textarea>
+      <button class="go" id="voiceSave">Save to brain</button>
+      <div class="msg" id="voiceMsg"></div>
+    </div>
+  </section>
+
+  <!-- YOUTUBE -->
+  <section class="panel" id="p-youtube">
+    <div class="card">
+      <div class="hint">Paste a link. The spoken transcript is fetched and summarised automatically — no copying required.</div>
+      <input type="url" id="ytUrl" placeholder="https://www.youtube.com/watch?v=…">
+      <button class="go" id="ytGo">Capture video</button>
+      <div class="msg" id="ytMsg"></div>
+    </div>
+  </section>
+
+  <!-- PDF -->
+  <section class="panel" id="p-pdf">
+    <div class="card">
+      <div class="hint">Drop a PDF or tap to choose one. The text is read in your browser — the file never leaves your computer.</div>
+      <div id="drop">
+        <div style="font-size:30px;margin-bottom:7px">📄</div>
+        <div>Drop a PDF here, or tap to browse</div>
+      </div>
+      <input type="file" id="pdfFile" accept="application/pdf" style="display:none">
+      <textarea id="pdfText" placeholder="Extracted text appears here for review…" style="margin-top:11px"></textarea>
+      <button class="go" id="pdfSave">Save to brain</button>
+      <div class="msg" id="pdfMsg"></div>
+    </div>
+  </section>
+
+  <!-- URL -->
+  <section class="panel" id="p-url">
+    <div class="card">
+      <div class="hint">Any article or page. The readable text is fetched and summarised on the server.</div>
+      <input type="url" id="urlInput" placeholder="https://…">
+      <button class="go" id="urlGo">Capture page</button>
+      <div class="msg" id="urlMsg"></div>
+    </div>
+  </section>
+
+  <!-- SEARCH -->
+  <section class="panel" id="p-search">
+    <div class="card">
+      <div class="hint">Search by meaning, not just words. "How do I get clients" will find notes about customer acquisition.</div>
+      <input type="text" id="q" placeholder="What are you looking for?">
+      <button class="go" id="searchGo">Search</button>
+    </div>
+    <div class="msg" id="searchMsg"></div>
+    <div id="searchOut"></div>
+  </section>
+
+  <!-- RECENT -->
+  <section class="panel" id="p-recent">
+    <div class="count" id="recentCount"></div>
+    <div id="recentOut"></div>
+  </section>
+</div>
+
+<script src="config.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script>
+// ===========================================================================
+// PDF.js worker — MUST match the library version above exactly.
+// A mismatch (or a missing workerSrc) is the single most common reason PDF
+// reading silently does nothing. If you upgrade one line, upgrade both.
+// ===========================================================================
+if (window.pdfjsLib) {
+  pdfjsLib.GlobalWorkerOptions.workerSrc =
+    'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+}
+
+// ---------- tiny helpers ----------
+const $ = id => document.getElementById(id);
+
+// ===========================================================================
+// SETUP CHECK
+// Without this, an unfilled config.js throws on the very first line and the
+// whole page silently stops working — you get a login form where nothing
+// happens when you click. Better to say plainly what is wrong.
+// ===========================================================================
+const configOk =
+  typeof SUPABASE_URL === 'string' &&
+  typeof SUPABASE_ANON_KEY === 'string' &&
+  SUPABASE_URL.startsWith('http') &&
+  !SUPABASE_URL.includes('PASTE_') &&
+  !SUPABASE_ANON_KEY.includes('PASTE_');
+
+if (!configOk) {
+  $('auth').innerHTML =
+    '<h1>🧠 Open Brain</h1>' +
+    '<p>Almost there — this app has not been connected to your database yet.</p>' +
+    '<div class="msg show err" style="text-align:left">' +
+      '<strong>config.js still has its placeholder values.</strong><br><br>' +
+      'Tell Claude Code: <em>"fill in config.js with my Supabase URL and public key"</em>' +
+      ' — or edit the file yourself. Both values are in your Supabase dashboard ' +
+      'under Project Settings → API Keys.' +
+    '</div>';
+  throw new Error('Open Brain: config.js is not filled in yet.');
+}
+
+const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+let user = null;
+function say(el, text, kind='work'){
+  const n = $(el); n.textContent = text; n.className = 'msg show ' + kind;
+}
+function clear(el){ $(el).className = 'msg'; }
+function busy(btn, on, label){
+  const b = $(btn); b.disabled = on;
+  if (on){ b.dataset.was = b.textContent; b.textContent = label || 'Working…'; }
+  else if (b.dataset.was){ b.textContent = b.dataset.was; }
+}
+async function fn(name, payload){
+  const { data: { session } } = await sb.auth.getSession();
+  const res = await fetch(`${SUPABASE_URL}/functions/v1/${name}`, {
+    method:'POST',
+    headers:{
+      'Content-Type':'application/json',
+      'Authorization':`Bearer ${session?.access_token ?? SUPABASE_ANON_KEY}`,
+      'apikey': SUPABASE_ANON_KEY,
+    },
+    body: JSON.stringify(payload),
+  });
+  return res.json();
+}
+
+// ===========================================================================
+// AUTH
+// ===========================================================================
+let signingUp = false;
+
+$('authSwitch').onclick = () => {
+  signingUp = !signingUp;
+  $('authBtn').textContent   = signingUp ? 'Create account' : 'Sign in';
+  $('authSwitchText').textContent = signingUp ? 'Already have one?' : 'No account yet?';
+  $('authSwitch').textContent     = signingUp ? 'Sign in' : 'Create one';
+  clear('authMsg');
+};
+
+$('authBtn').onclick = async () => {
+  const email = $('email').value.trim();
+  const password = $('password').value;
+  if (!email || !password) return say('authMsg','Enter an email and a password.','err');
+  if (password.length < 6) return say('authMsg','Password must be at least 6 characters.','err');
+
+  busy('authBtn', true);
+  const { error } = signingUp
+    ? await sb.auth.signUp({ email, password })
+    : await sb.auth.signInWithPassword({ email, password });
+  busy('authBtn', false);
+
+  if (error) {
+    // The most common setup snag, translated into something actionable
+    const msg = /confirm/i.test(error.message)
+      ? 'This account needs email confirmation. Turn it off in Supabase → Authentication → Sign In / Providers → Email → uncheck "Confirm email", then try again.'
+      : error.message;
+    return say('authMsg', msg, 'err');
+  }
+  if (signingUp) say('authMsg','Account created. Signing you in…','ok');
+};
+
+$('signout').onclick = async () => { await sb.auth.signOut(); location.reload(); };
+
+sb.auth.onAuthStateChange((_e, session) => {
+  user = session?.user ?? null;
+  if (user) start(); else { $('auth').style.display='block'; $('app').style.display='none'; }
+});
+
+async function start(){
+  $('auth').style.display = 'none';
+  $('app').style.display  = 'block';
+  const { error } = await sb.from('thoughts').select('id', { count:'exact', head:true });
+  if (error){ $('dot').className='dot off'; $('statusText').textContent='database error'; }
+  else { $('dot').className='dot on'; $('statusText').textContent='connected'; }
+  loadRecent();
+}
+
+// ===========================================================================
+// TABS
+// ===========================================================================
+document.querySelectorAll('nav button').forEach(b => {
+  b.onclick = () => {
+    document.querySelectorAll('nav button').forEach(x => x.classList.remove('active'));
+    document.querySelectorAll('.panel').forEach(x => x.classList.remove('active'));
+    b.classList.add('active');
+    $('p-' + b.dataset.tab).classList.add('active');
+    if (b.dataset.tab === 'recent') loadRecent();
+  };
+});
+
+// ===========================================================================
+// SAVING
+// ===========================================================================
+async function save(content, source, metadata={}){
+  const { error } = await sb.from('thoughts')
+    .insert({ user_id:user.id, content, source, metadata });
+  return error;
+}
+
+$('writeSave').onclick = async () => {
+  const t = $('writeText').value.trim();
+  if (!t) return say('writeMsg','Nothing to save yet.','err');
+  busy('writeSave', true, 'Saving…');
+  const err = await save(t, 'text');
+  busy('writeSave', false);
+  if (err) return say('writeMsg', err.message, 'err');
+  $('writeText').value = '';
+  say('writeMsg','Saved. Tags and connections are being added now.','ok');
+  setTimeout(() => clear('writeMsg'), 4000);
+  loadRecent();
+};
+
+$('writeText').addEventListener('keydown', e => {
+  if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') $('writeSave').click();
+});
+
+// ===========================================================================
+// VOICE
+// ===========================================================================
+const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+let rec = null, listening = false;
+
+$('mic').onclick = () => {
+  if (!SR) return say('voiceMsg','This browser cannot do speech recognition. Chrome or Edge will work.','err');
+  if (listening){ rec.stop(); return; }
+
+  rec = new SR();
+  rec.continuous = true; rec.interimResults = true; rec.lang = 'en-US';
+  let settled = '';
+
+  rec.onstart = () => { listening = true; $('mic').classList.add('live'); say('voiceMsg','Listening…','work'); };
+  rec.onresult = e => {
+    let interim = '';
+    for (let i = e.resultIndex; i < e.results.length; i++){
+      const chunk = e.results[i][0].transcript;
+      if (e.results[i].isFinal) settled += chunk + ' '; else interim += chunk;
+    }
+    $('voiceText').value = (settled + interim).trim();
+  };
+  rec.onerror = e => {
+    listening = false; $('mic').classList.remove('live');
+    say('voiceMsg', e.error === 'not-allowed'
+      ? 'Microphone access was blocked. Allow it in your browser settings and try again.'
+      : `Microphone error: ${e.error}`, 'err');
+  };
+  rec.onend = () => { listening = false; $('mic').classList.remove('live'); clear('voiceMsg'); };
+  rec.start();
+};
+
+$('voiceSave').onclick = async () => {
+  const t = $('voiceText').value.trim();
+  if (!t) return say('voiceMsg','Nothing recorded yet.','err');
+  if (listening) rec.stop();
+  busy('voiceSave', true, 'Saving…');
+  const err = await save(t, 'voice');
+  busy('voiceSave', false);
+  if (err) return say('voiceMsg', err.message, 'err');
+  $('voiceText').value = '';
+  say('voiceMsg','Saved.','ok');
+  loadRecent();
+};
+
+// ===========================================================================
+// YOUTUBE
+// ===========================================================================
+$('ytGo').onclick = async () => {
+  const url = $('ytUrl').value.trim();
+  if (!url) return say('ytMsg','Paste a YouTube link first.','err');
+  busy('ytGo', true, 'Fetching…');
+  say('ytMsg','Fetching the transcript and summarising. This takes 15–40 seconds.','work');
+  const r = await fn('capture-youtube', { url });
+  busy('ytGo', false);
+  if (!r.ok) return say('ytMsg', r.error || 'Could not capture that video.', 'err');
+  $('ytUrl').value = '';
+  say('ytMsg',
+    `Saved: ${r.title}` + (r.has_transcript ? '' : ' (no captions on this video — summarised from its description)'),
+    'ok');
+  loadRecent();
+};
+
+// ===========================================================================
+// PDF  — read in the browser, nothing uploaded
+// ===========================================================================
+$('drop').onclick = () => $('pdfFile').click();
+$('drop').ondragover = e => { e.preventDefault(); $('drop').classList.add('over'); };
+$('drop').ondragleave = () => $('drop').classList.remove('over');
+$('drop').ondrop = e => {
+  e.preventDefault(); $('drop').classList.remove('over');
+  if (e.dataTransfer.files[0]) readPdf(e.dataTransfer.files[0]);
+};
+$('pdfFile').onchange = e => { if (e.target.files[0]) readPdf(e.target.files[0]); };
+
+let pdfName = '';
+async function readPdf(file){
+  if (file.type !== 'application/pdf') return say('pdfMsg','That is not a PDF.','err');
+  pdfName = file.name;
+  say('pdfMsg', `Reading ${file.name}…`, 'work');
+  try {
+    const buf = await file.arrayBuffer();
+    const doc = await pdfjsLib.getDocument({ data: buf }).promise;
+    let out = '';
+    for (let p = 1; p <= doc.numPages; p++){
+      say('pdfMsg', `Reading page ${p} of ${doc.numPages}…`, 'work');
+      const page = await doc.getPage(p);
+      const content = await page.getTextContent();
+      out += content.items.map(i => i.str).join(' ') + '\n\n';
+    }
+    const text = out.replace(/[ \t]+/g,' ').replace(/\n{3,}/g,'\n\n').trim();
+    if (text.length < 50){
+      return say('pdfMsg',
+        'Almost no text found. This is probably a scanned PDF — an image of a page rather than real text. ' +
+        'It would need OCR software first.', 'err');
+    }
+    $('pdfText').value = text;
+    say('pdfMsg', `Read ${doc.numPages} page${doc.numPages===1?'':'s'}. Review it, then save.`, 'ok');
+  } catch (err) {
+    say('pdfMsg', `Could not read that PDF: ${err.message}`, 'err');
+  }
+}
+
+$('pdfSave').onclick = async () => {
+  const t = $('pdfText').value.trim();
+  if (!t) return say('pdfMsg','Nothing to save yet.','err');
+  busy('pdfSave', true, 'Saving…');
+  const err = await save(`📄 ${pdfName || 'Document'}\n\n${t}`, 'pdf', { filename: pdfName });
+  busy('pdfSave', false);
+  if (err) return say('pdfMsg', err.message, 'err');
+  $('pdfText').value = ''; pdfName = '';
+  say('pdfMsg','Saved.','ok');
+  loadRecent();
+};
+
+// ===========================================================================
+// URL
+// ===========================================================================
+$('urlGo').onclick = async () => {
+  const url = $('urlInput').value.trim();
+  if (!url) return say('urlMsg','Paste a link first.','err');
+  busy('urlGo', true, 'Fetching…');
+  say('urlMsg','Fetching the page and summarising…','work');
+  const r = await fn('capture-url', { url });
+  busy('urlGo', false);
+  if (!r.ok) return say('urlMsg', r.error || 'Could not capture that page.', 'err');
+  $('urlInput').value = '';
+  say('urlMsg', `Saved: ${r.title}`, 'ok');
+  loadRecent();
+};
+
+// ===========================================================================
+// SEARCH
+// ===========================================================================
+$('searchGo').onclick = runSearch;
+$('q').addEventListener('keydown', e => { if (e.key === 'Enter') runSearch(); });
+
+async function runSearch(){
+  const q = $('q').value.trim();
+  if (!q) return;
+  busy('searchGo', true, 'Searching…');
+  say('searchMsg','Searching by meaning…','work');
+  $('searchOut').innerHTML = '';
+
+  // The server does the searching — it holds the AI key needed to turn this
+  // phrase into a meaning fingerprint. It falls back to keyword matching on
+  // its own if that is unavailable.
+  const r = await fn('search-brain', { query: q, limit: 20 });
+
+  busy('searchGo', false);
+  if (!r.ok){ return say('searchMsg', r.error || 'Search failed.', 'err'); }
+  clear('searchMsg');
+
+  if (!r.results?.length){
+    $('searchOut').innerHTML = `<div class="empty">Nothing matches "${escapeHtml(q)}" yet.</div>`;
+    return;
+  }
+
+  const label = r.mode === 'semantic'
+    ? `${r.count} result${r.count===1?'':'s'} — matched by meaning`
+    : `${r.count} result${r.count===1?'':'s'} — matched by keyword`;
+
+  $('searchOut').innerHTML =
+    `<div class="count">${label}</div>` + r.results.map(render).join('');
+}
+
+// ===========================================================================
+// RECENT
+// ===========================================================================
+async function loadRecent(){
+  const { data, error, count } = await sb.from('thoughts')
+    .select('id,content,source,category,tags,created_at', { count:'exact' })
+    .order('created_at', { ascending:false })
+    .limit(25);
+
+  if (error){ $('recentOut').innerHTML = `<div class="empty">${escapeHtml(error.message)}</div>`; return; }
+
+  $('recentCount').textContent = count
+    ? `${count} thought${count===1?'':'s'} in your brain`
+    : '';
+
+  $('recentOut').innerHTML = data?.length
+    ? data.map(render).join('')
+    : `<div class="empty">Nothing saved yet.<br>Use the Write tab to add your first thought.</div>`;
+}
+
+// ---------- rendering ----------
+function escapeHtml(s){
+  return String(s).replace(/[&<>"']/g, c =>
+    ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+function render(t){
+  const when = new Date(t.created_at).toLocaleString(undefined,
+    { month:'short', day:'numeric', hour:'numeric', minute:'2-digit' });
+  const badges = [];
+  if (t.source && t.source !== 'text') badges.push(`<span class="badge">${escapeHtml(t.source)}</span>`);
+  if (t.category) badges.push(`<span class="badge">${escapeHtml(t.category)}</span>`);
+  if (typeof t.similarity === 'number')
+    badges.push(`<span class="badge sim">${Math.round(t.similarity*100)}% match</span>`);
+  const tags = t.tags?.length
+    ? `<div class="tags">${t.tags.map(x => '#' + escapeHtml(x)).join(' ')}</div>` : '';
+  return `<div class="thought">
+      <div class="meta"><span>${when}</span>${badges.join('')}</div>
+      <div class="body">${escapeHtml(t.content)}</div>${tags}
+    </div>`;
+}
+
+// ---------- offline support ----------
+if ('serviceWorker' in navigator){
+  navigator.serviceWorker.register('sw.js').catch(() => {});
+}
+</script>
+</body>
+</html>

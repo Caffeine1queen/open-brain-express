@@ -1,0 +1,33 @@
+{
+  "$comment": [
+    "Pre-approves the commands this build actually needs, so Claude Code can",
+    "work without stopping for permission every few seconds.",
+    "",
+    "This is deliberately narrow. The older advice was to launch with",
+    "--dangerously-skip-permissions, which switches off ALL safety checks for",
+    "the whole session. That is a bad habit to learn: it is fine on a throwaway",
+    "project and genuinely risky on a machine with work files on it. This list",
+    "gets you the same smooth run without teaching you to disable the seatbelt.",
+    "",
+    "Anything not listed here still asks first — which is what you want."
+  ],
+  "permissions": {
+    "allow": [
+      "Bash(git:*)",
+      "Bash(node:*)",
+      "Bash(npm:*)",
+      "Bash(npx supabase:*)",
+      "Bash(npx vercel:*)",
+      "Bash(npx -y mcp-remote:*)",
+      "Bash(curl:*)",
+      "Bash(ls:*)",
+      "Bash(cat:*)",
+      "Bash(mkdir:*)",
+      "Bash(where:*)",
+      "Bash(which:*)",
+      "Read(**)",
+      "Edit(**)",
+      "Write(**)"
+    ]
+  }
+}

@@ -1,0 +1,22 @@
+# ============================================================================
+# THINGS THAT MUST NEVER REACH GITHUB
+# ============================================================================
+
+# Your keys. This file is created during Session 2 and holds your OpenRouter
+# key, your Supabase service role key, and your MCP access key. If it ever
+# lands in a public repository, treat all three as compromised and rotate them.
+.env.local
+.env
+
+# Contains your service role key inside the trigger definition.
+webhook.sql
+
+# ============================================================================
+# Ordinary noise
+# ============================================================================
+node_modules/
+.vercel/
+.supabase/
+*.log
+.DS_Store
+Thumbs.db

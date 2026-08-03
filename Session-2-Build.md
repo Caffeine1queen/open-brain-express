@@ -1,0 +1,301 @@
+# Session 2 — Build
+
+**Paste everything below into Claude Code and press enter.**
+
+Then watch. You will be asked for a few values along the way. Otherwise this
+runs itself and takes roughly 45–90 minutes, most of which is waiting.
+
+---
+
+```
+You are setting up Open Brain for a non-technical person who is sitting with you
+right now. The code all exists already — your job is to fetch it, configure it,
+deploy it, and prove it works. You should not need to write any features from
+scratch.
+
+=== HOW TO BEHAVE ===
+
+- Talk like a person. No jargon unless you immediately explain it.
+- Do the work. Do not explain what you are about to do at length, just do it and
+  report what happened.
+- Announce each major step in one short line so they can follow along.
+- When you need something from them, ask for exactly one thing and wait.
+- NEVER paste an API key, token, or password back into the chat. Write it where
+  it belongs and confirm with "saved", nothing more.
+
+=== IMPORTANT: YOU ARE AUTHORISED TO REPAIR ===
+
+This repository may be out of date. Services change their APIs without warning.
+
+If a command fails: read the actual error, work out the cause, fix the file, and
+try again. Do not stop and ask the person what to do — they will not know. Only
+stop if you have tried twice and are genuinely stuck, and then explain the
+problem in plain language.
+
+If a deploy fails because of a Supabase or Deno change, fix the code. It is
+meant to be edited.
+
+=== WHAT YOU ARE BUILDING ===
+
+A personal knowledge base:
+- A Supabase database with login protection, semantic search, and a graph that
+  links related thoughts automatically
+- A web app deployed to Vercel for capturing text, voice, YouTube, PDFs and web
+  pages
+- Five edge functions doing the AI work
+- An MCP server so Claude Desktop can read the brain
+
+=== BEFORE YOU START ===
+
+Confirm these exist. If any are missing, help them install it first.
+  git --version
+  node --version
+
+Use `npx supabase` for every Supabase command. Do NOT run
+`npm install -g supabase` — Supabase removed support for global npm installs and
+that command now fails.
+
+On Windows, chain commands with `;` not `&&`.
+
+=== STEP 0 — GET THEIR COPY OF THE CODE ===
+
+In Session 1 they forked the project on GitHub. Ask for their GitHub username,
+then clone THEIR fork (not the original) into a sensible folder:
+
+  git clone https://github.com/THEIR_USERNAME/open-brain-express
+  cd open-brain-express
+
+Everything from here happens inside that folder. Confirm you can see
+migration.sql, index.html, and a supabase/functions directory.
+
+If they have not forked it yet, send them to
+github.com/King-Tuerto/open-brain-express and have them click Fork first.
+
+=== STEP 1 — COLLECT WHAT YOU NEED ===
+
+Ask for these one at a time. Explain each in one sentence.
+
+1. Their Supabase project URL (looks like https://abcdefgh.supabase.co)
+   Found at: Supabase dashboard -> Project Settings -> API Keys -> Project URL
+2. Their Supabase publishable/anon key (a long string, safe to be public)
+   Same page.
+3. Their Supabase service role key (SECRET — full database access)
+   Same page, usually hidden behind a "reveal" button.
+   Tell them: this one is like the master key to their house. It goes into
+   Supabase's own secret storage and nowhere else. Never in a file, never in
+   this chat.
+4. Their OpenRouter key (starts with sk-or-)
+5. Their Supadata key — OPTIONAL. If they do not have one, skip it and continue.
+
+Write these into a file called `.env.local` in this folder.
+Then confirm `.env.local` is listed in `.gitignore` — if there is no
+`.gitignore`, create one containing `.env.local` and `webhook.sql`.
+
+=== STEP 2 — CONFIGURE THE APP ===
+
+Edit `config.js`, replacing the two placeholders with their real Supabase URL
+and publishable key.
+
+=== STEP 3 — SET UP THE DATABASE ===
+
+Run the contents of `migration.sql` against their database.
+
+Easiest reliable route: tell them to open their Supabase dashboard -> SQL Editor
+-> New query, then paste the file's contents and click Run. Confirm they see
+"Success".
+
+(You can also use `npx supabase link` and `npx supabase db push`, but the SQL
+editor avoids a login dance and works every time.)
+
+Verify it worked by asking them to run this in the same SQL editor:
+  select table_name from information_schema.tables where table_schema='public';
+They should see `thoughts` and `thought_links`.
+
+=== STEP 4 — LINK THE PROJECT AND STORE SECRETS ===
+
+  npx supabase login
+  npx supabase link --project-ref THEIR_PROJECT_REF
+
+The project ref is the part of their URL before `.supabase.co`.
+
+Then store the secrets. These live inside Supabase, never in a file:
+
+  npx supabase secrets set OPENROUTER_API_KEY=...
+  npx supabase secrets set MCP_ACCESS_KEY=...
+  npx supabase secrets set SUPADATA_API_KEY=...     (only if they have one)
+
+For MCP_ACCESS_KEY, generate a long random string yourself. Save it in
+`.env.local` too — Session 3 needs it.
+
+DO NOT try to set SUPABASE_URL, SUPABASE_ANON_KEY, or SUPABASE_SERVICE_ROLE_KEY
+as secrets. Supabase reserves the `SUPABASE_` prefix and will reject them. Those
+three are provided to your functions automatically.
+
+=== STEP 5 — DEPLOY THE EDGE FUNCTIONS ===
+
+Deploy these four normally:
+
+  npx supabase functions deploy enrich-thought
+  npx supabase functions deploy capture-youtube
+  npx supabase functions deploy capture-url
+  npx supabase functions deploy search-brain
+
+Then deploy the MCP server WITH A DIFFERENT FLAG:
+
+  npx supabase functions deploy open-brain-mcp --no-verify-jwt
+
+That flag matters. Every other function is called by the logged-in web app,
+which sends a login token Supabase can check. The MCP server is called by
+Claude Desktop, which has no idea what Supabase is and cannot send one. Without
+--no-verify-jwt, Supabase rejects Claude before the code runs and you get a
+confusing "server disconnected" error with nothing in the logs.
+
+That function guards itself with MCP_ACCESS_KEY instead.
+
+=== STEP 6 — MAKE ENRICHMENT AUTOMATIC ===
+
+Every new thought needs to be tagged, embedded and linked automatically. That
+means the database calling `enrich-thought` whenever a row is inserted.
+
+Create a file `webhook.sql` containing the following, with THEIR_PROJECT_REF and
+THEIR_SERVICE_ROLE_KEY substituted in:
+
+  create extension if not exists pg_net;
+
+  drop trigger if exists on_thought_created on thoughts;
+
+  create trigger on_thought_created
+    after insert on thoughts
+    for each row
+    execute function supabase_functions.http_request(
+      'https://THEIR_PROJECT_REF.supabase.co/functions/v1/enrich-thought',
+      'POST',
+      '{"Content-Type":"application/json","Authorization":"Bearer THEIR_SERVICE_ROLE_KEY"}',
+      '{}',
+      '5000'
+    );
+
+Have them run it in the SQL editor.
+
+Note on `pg_net`: it is what lets the database make outbound web requests. It is
+easy to miss and nothing works without it — the trigger silently does nothing.
+
+`webhook.sql` contains a secret. Make sure it is in `.gitignore` and never
+committed.
+
+=== STEP 7 — PUT THE APP ON THE INTERNET ===
+
+  npx vercel login
+  npx vercel --prod
+
+Accept the defaults. It is a plain static site — no build step, no framework.
+When it finishes, Vercel prints a URL. Give it to them and tell them to open it.
+
+They should see a login screen. If they see "config.js still has its placeholder
+values", Step 2 did not save — fix it and redeploy.
+
+=== STEP 8 — CREATE THEIR LOGIN ===
+
+Have them, on their live site:
+  1. Click "Create one"
+  2. Enter an email and a password of at least 6 characters
+  3. Click Create account
+
+They should land in the app with a green "connected" dot.
+
+If they get an error mentioning email confirmation, it was not switched off in
+Session 1. Send them to Supabase -> Authentication -> Sign In / Providers ->
+Email -> uncheck "Confirm email", then try again.
+
+=== STEP 9 — TELL THE MCP SERVER WHOSE BRAIN THIS IS ===
+
+Have them run this in the SQL editor:
+  select id, email from auth.users;
+
+Take the id and store it:
+  npx supabase secrets set OWNER_USER_ID=that-uuid
+
+Then redeploy so it picks up the new value:
+  npx supabase functions deploy open-brain-mcp --no-verify-jwt
+
+=== STEP 10 — PROVE IT WORKS ===
+
+Walk through these with them. Do not skip any — this is where problems surface
+while you can still fix them.
+
+1. On the Write tab, save a thought of two or three sentences about something
+   real. Wait 15 seconds, then check the Recent tab. It should now show tags and
+   a category that were not there when they saved it. That proves the AI
+   enrichment and the database trigger are both working.
+
+   If tags never appear, check the function logs:
+   Supabase dashboard -> Edge Functions -> enrich-thought -> Logs.
+   Most likely causes: OPENROUTER_API_KEY not set, no credit on the OpenRouter
+   account, or pg_net not enabled in Step 6.
+
+2. On the Link tab, paste any news article URL. It should save a summary within
+   about 30 seconds.
+
+3. On the YouTube tab, paste a video they have actually watched. It should save
+   a summary. If it says "no captions — summarised from its description", that
+   is the expected fallback, not a failure.
+
+4. On the PDF tab, drop in any PDF with real text in it.
+
+5. Save a second thought about a similar topic to the first. Wait 15 seconds,
+   then have them run this in the SQL editor:
+     select count(*) from thought_links;
+   A number greater than zero means the graph is building itself. That is the
+   whole system working end to end.
+
+=== STEP 11 — SAVE THEIR WORK BACK TO GITHUB ===
+
+Before pushing, verify nothing secret is about to be committed:
+
+  git status
+
+`.env.local` and `webhook.sql` must NOT appear in the list. If either one does,
+the .gitignore is not working — fix it before going any further. Those two files
+contain their service role key and their AI key.
+
+Then:
+
+  git add .
+  git commit -m "Configure Open Brain"
+  git push
+
+`config.js` does get committed, and that is fine — the key in it is public by
+design and cannot read anything without a login.
+
+=== STEP 12 — WRAP UP ===
+
+Tell them, in plain language:
+- Their brain is live at their Vercel URL
+- They can install it on their phone: open the URL in the phone browser and
+  choose "Add to Home Screen"
+- Everything they save gets tagged and connected automatically
+- Nobody else can read it — it is protected by their login
+- Session 3 connects it to Claude Desktop
+
+Then create a file `SETUP-NOTES.md` recording: their Vercel URL, their Supabase
+project ref, which functions were deployed, and anything you had to repair.
+Do NOT put any keys or passwords in it.
+```
+
+---
+
+## If something goes wrong
+
+Tell Claude Code what you see. It can read the error and fix it — that is what
+it is for. You do not need to understand the error yourself.
+
+The one thing worth knowing: **if tags never appear on your saved thoughts**,
+the problem is almost always one of three things — no credit on your OpenRouter
+account, the OpenRouter key was typed wrong, or `pg_net` did not get enabled.
+Say that to Claude Code and it will check all three.
+
+---
+
+## Next
+
+Open **Session 3** — connecting Claude, and filling your brain up.
