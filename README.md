@@ -10,6 +10,9 @@ disponible en español.*
 
 ---
 
+**New here? Two minutes of context first:**
+[What is this and what do I do with it?](WHAT-IS-THIS.md) · [¿Qué es esto y para qué sirve?](QUE-ES-ESTO.md)
+
 # 🚀 → **[START HERE / EMPIEZA AQUÍ](START-HERE.md)** ←
 
 **There is one prompt. Copy it, paste it into Claude, press enter.**

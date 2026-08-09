@@ -1,5 +1,8 @@
 # Start here · Empieza aquí
 
+*Not sure what this is yet? Read [What is this?](WHAT-IS-THIS.md) first — three minutes.*
+*¿Todavía no sabes qué es esto? Lee [¿Qué es esto?](QUE-ES-ESTO.md) primero — tres minutos.*
+
 **Copy the block below. Paste it into Claude. Press enter.**
 **Copia el bloque de abajo. Pégalo en Claude. Presiona Enter.**
 
