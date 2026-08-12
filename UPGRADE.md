@@ -10,6 +10,23 @@ anterior de este repositorio Express? Esta página es para ti.*
 *Building your first brain instead? You want [START-HERE.md](START-HERE.md).*
 *¿Vas a construir tu primer cerebro? Necesitas [START-HERE.md](START-HERE.md).*
 
+---
+
+**Built before August 12, 2026?** Upgrading gets you real search — catching
+exact names and numbers, not just similar meaning — the ability to find one
+detail buried inside a long article, video, or PDF you already saved, and,
+if you're on the very first starter kit, a privacy hole closed for good.
+Nothing you've already saved is touched or lost.
+
+*¿Lo construiste antes del 12 de agosto de 2026? Al actualizar consigues
+búsqueda de verdad — que encuentra nombres y números exactos, no solo ideas
+parecidas — la posibilidad de encontrar un detalle escondido dentro de un
+artículo, video o PDF largo que ya guardaste, y, si usas el kit inicial más
+viejo, un hueco de privacidad cerrado para siempre. Nada de lo que ya
+guardaste se toca ni se pierde.*
+
+---
+
 **Copy the block below. Paste it into Claude. Press enter.**
 **Copia el bloque de abajo. Pégalo en Claude. Presiona Enter.**
 

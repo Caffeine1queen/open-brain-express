@@ -169,4 +169,8 @@ let Claude explain a change before it makes one.
 Ready? → **[START HERE](START-HERE.md)**
 
 Already built one of these before — the seven-level course, the starter repo,
-or an earlier version of this one? Don't start over. → **[UPGRADE](UPGRADE.md)**
+or an earlier version of this one? If that was before August 12, 2026,
+upgrading gets you real search (not just similar-meaning matches), the
+ability to find a detail buried in a long saved article or video, and — for
+the oldest starter kits — a closed privacy hole. Don't start over. →
+**[UPGRADE](UPGRADE.md)**

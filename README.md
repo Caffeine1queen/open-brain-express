@@ -31,12 +31,26 @@ Built one before — the seven-level course, the bare-bones starter repo, or an
 earlier version of this Express repo? Don't start over. There's a page for
 bringing an existing brain up to date without losing anything in it:
 
+**Built before August 12, 2026?** You're missing real improvements — search
+that catches exact names and numbers as well as similar meaning, the
+ability to find one detail buried inside a long article or video you
+already saved, and, if you're on the very first starter kit, a privacy hole
+that's still open. Upgrading fixes all of it without touching anything
+you've already saved.
+
 # → **[UPGRADE / ACTUALIZAR](UPGRADE.md)** ←
 
 *¿Construiste uno antes — con el curso de siete niveles, el repositorio
 inicial, o una versión anterior de este repositorio Express? No empieces de
 cero. Hay una página para poner al día un cerebro existente sin perder nada
 de lo que ya tienes.*
+
+*¿Lo construiste antes del 12 de agosto de 2026? Te estás perdiendo mejoras
+reales — una búsqueda que encuentra nombres y números exactos además de
+ideas parecidas, la posibilidad de encontrar un detalle escondido dentro de
+un artículo o video largo que ya guardaste, y, si usaste el kit inicial más
+viejo, un hueco de privacidad que sigue abierto. Actualizar arregla todo eso
+sin tocar nada de lo que ya guardaste.*
 
 ---
 
