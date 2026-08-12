@@ -147,12 +147,21 @@ but tell them what you actually FOUND, in plain numbers, not a label:
   A. "Express, slightly behind" — has user_id, embedding, source, metadata,
      thought_links, llm_usage, but no thought_chunks / thought_sources /
      dedup_key. Security is already closed.
-  B. "The course" — has user_id and RLS (closed), maybe tags/category/summary,
-     maybe not, no embedding column at all (or one that's always empty),
-     no thought_links. How far they got varies a lot — say what you see, not
-     a level number.
+  B. "The course" — no embedding column at all (or one that's always empty),
+     no thought_links, maybe tags/category/summary, maybe not. How far they
+     got varies a lot — say what you see, not a level number. DO NOT ASSUME
+     THE SECURITY IS CLOSED. The original version of this course, taught to
+     real people before this repo existed, never added a login system or
+     closed the open-access policy at ANY point — that fix was added later,
+     to a different, newer copy of the same course. Some course-taught
+     people have user_id and closed RLS, some do not, and you cannot tell
+     which from the level they say they reached. Trust check 4, not the
+     label.
   C. "The bare starter" — just id, content, created_at. No accounts. Security
-     is OPEN (see check 4). Nothing has ever been searchable by meaning.
+     is almost always OPEN (see check 4) — the starter repo's whole design
+     leaves it open by default until a later step closes it, and plenty of
+     people never took that step. Nothing has ever been searchable by
+     meaning.
 
 Do not silently categorise them into a bucket and move on. Say this — in
 their language, filling in the REAL numbers you found, not these examples:
@@ -171,11 +180,11 @@ about their brain, possibly for months. Do not slide past it. Say, plainly:
   "One more thing before we continue, and it's important: right now, anyone
    who has your Supabase public key — which is sitting in plain text on your
    live website — could read, change, or delete every thought in your brain.
-   This was a known trade-off in the original starter kit, meant to be closed
-   early on, and in your case it looks like that step never happened.
-   Today's upgrade closes it, as part of the same migration that adds the new
-   search features. I wanted you to know it was open, and that it's about to
-   be fixed, rather than just quietly fixing it without telling you."
+   Whatever you originally built this with left that door open, and in your
+   case it was never closed. Today's upgrade closes it, as part of the same
+   migration that adds the new search features. I wanted you to know it was
+   open, and that it's about to be fixed, rather than just quietly fixing it
+   without telling you."
 
 Then continue. Do not stop and wait for permission to close a real security
 hole — closing it is not optional — but they must be TOLD, not left to find
