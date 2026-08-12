@@ -8,6 +8,13 @@ point Claude at it and it can search everything you have ever saved.
 *Una base de conocimiento personal que te pertenece. Todo el proceso está
 disponible en español.*
 
+**Not sure where to start?** → **[WELCOME.md](WELCOME.md)** asks one
+question and sends you to the right page — new brain or existing one, in
+either language.
+*¿No sabes por dónde empezar?* → **[WELCOME.md](WELCOME.md#bienvenido)**
+*hace una pregunta y te manda a la página correcta — cerebro nuevo o
+existente, en cualquiera de los dos idiomas.*
+
 ---
 
 **New here? Two minutes of context first:**
@@ -29,28 +36,15 @@ idioma antes que nada. No necesitas tener nada instalado para empezar.*
 
 Built one before — the seven-level course, the bare-bones starter repo, or an
 earlier version of this Express repo? Don't start over. There's a page for
-bringing an existing brain up to date without losing anything in it:
-
-**Built before August 12, 2026?** You're missing real improvements — search
-that catches exact names and numbers as well as similar meaning, the
-ability to find one detail buried inside a long article or video you
-already saved, and, if you're on the very first starter kit, a privacy hole
-that's still open. Upgrading fixes all of it without touching anything
-you've already saved.
+bringing an existing brain up to date without losing anything in it, and it
+says plainly what upgrading actually gets you:
 
 # → **[UPGRADE / ACTUALIZAR](UPGRADE.md)** ←
 
 *¿Construiste uno antes — con el curso de siete niveles, el repositorio
 inicial, o una versión anterior de este repositorio Express? No empieces de
 cero. Hay una página para poner al día un cerebro existente sin perder nada
-de lo que ya tienes.*
-
-*¿Lo construiste antes del 12 de agosto de 2026? Te estás perdiendo mejoras
-reales — una búsqueda que encuentra nombres y números exactos además de
-ideas parecidas, la posibilidad de encontrar un detalle escondido dentro de
-un artículo o video largo que ya guardaste, y, si usaste el kit inicial más
-viejo, un hueco de privacidad que sigue abierto. Actualizar arregla todo eso
-sin tocar nada de lo que ya guardaste.*
+de lo que ya tienes, y ahí te dice claramente qué consigues al actualizar.*
 
 ---
 
