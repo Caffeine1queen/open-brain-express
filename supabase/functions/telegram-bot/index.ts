@@ -22,6 +22,7 @@
 
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
 import { generateEmbedding, corsHeaders } from '../_shared/ai.ts'
+import { saveThoughtRow } from '../_shared/save-thought.ts'
 
 const SUPABASE_URL = Deno.env.get('SUPABASE_URL')!
 const SERVICE_ROLE_KEY = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!
@@ -147,27 +148,16 @@ Deno.serve(async (req) => {
         return ok()
       }
 
-      // Meaning-based search first, keyword as backup
+      // Meaning and exact-word matching in one call, fused by rank.
       const embedding = await generateEmbedding(query, { userId: OWNER_USER_ID, source: 'telegram-bot' })
-      let rows: any[] = []
-
-      if (embedding) {
-        const { data } = await supabase.rpc('search_thoughts_semantic', {
-          p_user_id: OWNER_USER_ID,
-          query_embedding: embedding,
-          match_threshold: 0.3,
-          match_count: 5,
-        })
-        rows = data ?? []
-      }
-      if (rows.length === 0) {
-        const { data } = await supabase.rpc('search_thoughts_keyword', {
-          p_user_id: OWNER_USER_ID,
-          query_text: query,
-          match_count: 5,
-        })
-        rows = data ?? []
-      }
+      const { data } = await supabase.rpc('search_thoughts_hybrid', {
+        p_user_id: OWNER_USER_ID,
+        query_text: query,
+        query_embedding: embedding,
+        match_threshold: 0.3,
+        match_count: 5,
+      })
+      const rows = data ?? []
 
       if (rows.length === 0) {
         await reply(chatId, `Nothing in your brain about "${query}".`)
@@ -181,21 +171,24 @@ Deno.serve(async (req) => {
     }
 
     // --- anything else: save it -------------------------------------------
-    const { error } = await supabase.from('thoughts').insert({
-      user_id: OWNER_USER_ID,
-      content: text,
-      source: 'telegram',
-      metadata: { from: message.from?.first_name ?? null },
-    })
-
-    if (error) {
-      console.error('[telegram] Save failed:', error.message)
-      await reply(chatId, `Could not save that: ${error.message}`)
-      return ok()
+    try {
+      const saved = await saveThoughtRow(supabase, {
+        user_id: OWNER_USER_ID,
+        content: text,
+        source: 'telegram',
+        metadata: { from: message.from?.first_name ?? null },
+      })
+      const words = text.split(/\s+/).length
+      await reply(
+        chatId,
+        saved.deduped
+          ? `Already had that one saved — no new copy made.`
+          : `✅ Saved (${words} word${words === 1 ? '' : 's'}). Tagging it now.`
+      )
+    } catch (err: any) {
+      console.error('[telegram] Save failed:', String(err))
+      await reply(chatId, `Could not save that: ${err?.message ?? String(err)}`)
     }
-
-    const words = text.split(/\s+/).length
-    await reply(chatId, `✅ Saved (${words} word${words === 1 ? '' : 's'}). Tagging it now.`)
     return ok()
 
   } catch (err) {

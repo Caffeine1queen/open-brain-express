@@ -31,6 +31,7 @@
 
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
 import { generateEmbedding, corsHeaders } from '../_shared/ai.ts'
+import { saveThoughtRow } from '../_shared/save-thought.ts'
 
 const SUPABASE_URL = Deno.env.get('SUPABASE_URL')!
 const SERVICE_ROLE_KEY = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!
@@ -196,29 +197,18 @@ Deno.serve(async (req) => {
 
       const embedding = await generateEmbedding(query, { userId: OWNER_USER_ID, source: 'mcp' })
 
-      // Semantic search when we can, keyword search when we cannot. Falling
-      // back means a temporary embedding outage degrades quality rather than
-      // returning nothing at all.
-      let rows: any[] = []
-      if (embedding) {
-        const { data, error } = await supabase.rpc('search_thoughts_semantic', {
-          p_user_id: OWNER_USER_ID,
-          query_embedding: embedding,
-          match_threshold: 0.3,
-          match_count: limit,
-        })
-        if (error) console.error('[mcp] semantic search failed:', error.message)
-        else rows = data ?? []
-      }
-
-      if (rows.length === 0) {
-        const { data } = await supabase.rpc('search_thoughts_keyword', {
-          p_user_id: OWNER_USER_ID,
-          query_text: query,
-          match_count: limit,
-        })
-        rows = data ?? []
-      }
+      // Meaning and exact-word matching in one call, fused by rank. A null
+      // embedding (AI key missing, or a brief OpenRouter outage) degrades
+      // gracefully to keyword-only instead of returning nothing.
+      const { data, error } = await supabase.rpc('search_thoughts_hybrid', {
+        p_user_id: OWNER_USER_ID,
+        query_text: query,
+        query_embedding: embedding,
+        match_threshold: 0.3,
+        match_count: limit,
+      })
+      if (error) console.error('[mcp] search failed:', error.message)
+      const rows = data ?? []
 
       if (rows.length === 0) {
         return textResult(id, `Nothing in the brain matches "${query}".`)
@@ -292,17 +282,21 @@ Deno.serve(async (req) => {
       const content = String(args.content ?? '').trim()
       if (!content) return textResult(id, 'Nothing to save — no content was provided.')
 
-      const { error } = await supabase.from('thoughts').insert({
-        user_id: OWNER_USER_ID,
-        content,
-        source: 'claude',
-      })
-      if (error) return textResult(id, `Could not save: ${error.message}`)
-
-      return textResult(
-        id,
-        'Saved to the brain. Tags, category and connections will be added automatically within a few seconds.'
-      )
+      try {
+        const saved = await saveThoughtRow(supabase, {
+          user_id: OWNER_USER_ID,
+          content,
+          source: 'claude',
+        })
+        return textResult(
+          id,
+          saved.deduped
+            ? 'That was already in the brain — no new copy made.'
+            : 'Saved to the brain. Tags, category and connections will be added automatically within a few seconds.'
+        )
+      } catch (err: any) {
+        return textResult(id, `Could not save: ${err?.message ?? String(err)}`)
+      }
     }
 
     return textResult(id, `Unknown tool: ${toolName}`)
