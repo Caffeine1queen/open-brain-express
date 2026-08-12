@@ -106,3 +106,7 @@ vender, porque está hecho de tu propia atención.
 ---
 
 ¿Listo? → **[EMPIEZA AQUÍ](START-HERE.md)**
+
+¿Ya construiste uno de estos antes — con el curso de siete niveles, el
+repositorio inicial, o una versión anterior de este mismo? No empieces de
+cero. → **[ACTUALÍZALO](UPGRADE.md)**

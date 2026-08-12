@@ -106,3 +106,6 @@ your own attention.
 ---
 
 Ready? → **[START HERE](START-HERE.md)**
+
+Already built one of these before — the seven-level course, the starter repo,
+or an earlier version of this one? Don't start over. → **[UPGRADE](UPGRADE.md)**
