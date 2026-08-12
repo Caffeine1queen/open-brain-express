@@ -103,6 +103,60 @@ This is the part it's missing: what *you* found worth keeping. Feed it for a
 year and you'll have something no AI company can sell you, because it's made of
 your own attention.
 
+## More than a filing cabinet
+
+Most of what goes in is what you'd expect — articles, videos, notes. That's
+useful, but it's still a filing cabinet, just a good one.
+
+There are two other kinds of thing worth saving that people never think to
+save: the decision, and the rule. "We picked this approach on April 9, and
+here's why" — so you don't re-litigate it in six months. "Never hand me a
+list of questions, just script it" — so Claude stops asking. Save a piece of
+your own writing you were happy with, too, and later ask Claude to write in
+that voice instead of its own.
+
+None of this happens by itself. Nothing watches you and infers what matters —
+the brain remembers exactly what gets deposited in it and nothing else. A
+brain fed only articles stays a pile of articles. The habit that actually
+builds something is small: when you notice yourself deciding, or setting a
+rule, or reacting to something, say it into the brain the same way you'd
+save an article.
+
+Do that for a while and something changes: any Claude connected to your
+brain isn't just answering questions about what you saved. It's reading back
+how you already decided to decide, and it acts on that instead of asking you
+to explain yourself again.
+
+## This is a floor, not a ceiling
+
+Finishing the three sessions isn't the finish line — it's the point where
+you have the one tool that actually matters: a Claude that can read your
+brain, write code against it, and explain what it's doing. Everything past
+here is something you can ask for. You don't need another course, and you
+don't need permission.
+
+The clearest example: a written description of who you are and how you
+write — your voice, what you care about, what you always push back on — that
+you hand to Claude so it works the way you would instead of the way it
+defaults to. People who build this call it a SOUL.md. Express doesn't ship
+one. That's the point: it's not a feature you're waiting for, it's a thing
+you decide you want and then build.
+
+Other people build a weekly routine that asks the brain what they decided
+recently. Or a capture habit shaped around how they actually work, instead
+of the one in Session 2. Or something that pulls their own past writing back
+out while they're drafting something new. None of this is included,
+half-built, or coming later — it's what becomes possible once you have a
+brain and a Claude that can read it.
+
+The method fits in one sentence: ask your brain what you've already said
+about this, then ask Claude to help you build it. That's the whole skill,
+and it's the thing that keeps a finished project growing instead of sitting
+there.
+
+One more thing, now that it's a real system: save your work as you go, and
+let Claude explain a change before it makes one.
+
 ---
 
 Ready? → **[START HERE](START-HERE.md)**

@@ -103,6 +103,60 @@ Esta es la parte que le falta: lo que *tú* consideraste que valía la pena
 guardar. Aliméntala un año y vas a tener algo que ninguna empresa de IA te puede
 vender, porque está hecho de tu propia atención.
 
+## Más que un archivero
+
+La mayoría de lo que guardas es lo que esperarías — artículos, videos, notas.
+Eso sirve, pero sigue siendo un archivero, nada más que uno bueno.
+
+Hay otras dos cosas que vale la pena guardar y que a nadie se le ocurre
+guardar: la decisión, y la regla. "Elegimos este camino el 9 de abril, y esta
+es la razón" — para no tener que volver a pelear esa decisión en seis meses.
+"Nunca me entregues una lista de preguntas, mejor hazlo tú" — para que Claude
+deje de preguntar. Guarda también algo que escribiste y que te gustó, y
+después pídele a Claude que escriba en ese tono en vez del suyo.
+
+Nada de esto pasa solo. Nadie te está observando para adivinar qué te
+importa — el cerebro recuerda exactamente lo que le metes, y nada más. Un
+cerebro alimentado solo con artículos se queda siendo un montón de artículos.
+El hábito que de verdad construye algo es pequeño: cuando te des cuenta de
+que estás decidiendo algo, poniendo una regla, o reaccionando a algo, dilo
+dentro del cerebro igual que guardarías un artículo.
+
+Haz eso por un tiempo y algo cambia: cualquier Claude conectado a tu cerebro
+deja de solo responder preguntas sobre lo que guardaste. Empieza a leer cómo
+ya decidiste decidir, y actúa con base en eso en vez de pedirte que se lo
+expliques otra vez.
+
+## Un piso, no un techo
+
+Terminar las tres sesiones no es la meta — es el punto donde ya tienes la
+única herramienta que de verdad importa: un Claude que puede leer tu
+cerebro, escribir código con base en él, y explicarte qué está haciendo.
+Todo lo que sigue es algo que puedes pedir. No necesitas otro curso, y no
+necesitas permiso.
+
+El ejemplo más claro: una descripción escrita de quién eres y cómo escribes
+— tu tono, lo que te importa, lo que siempre cuestionas — que le das a
+Claude para que trabaje como tú lo harías, en vez de a su manera por
+defecto. La gente que construye esto le dice SOUL.md. Express no trae uno.
+Ese es el punto: no es una función que estás esperando que se active, es
+algo que decides que quieres y luego construyes.
+
+Otras personas construyen una rutina semanal que le pregunta al cerebro qué
+decidieron últimamente. O un hábito de captura hecho a la medida de cómo
+realmente trabajan, distinto al de la Sesión 2. O algo que saca su propia
+escritura pasada mientras están redactando algo nuevo. Nada de esto viene
+incluido, a medio construir, ni "próximamente" — es lo que se vuelve posible
+una vez que tienes un cerebro y un Claude que lo puede leer.
+
+El método cabe en una frase: pregúntale a tu cerebro qué has dicho ya sobre
+esto, y después pídele a Claude que te ayude a construirlo. Esa es toda la
+habilidad, y es lo que hace que un proyecto terminado siga creciendo en vez
+de quedarse ahí parado.
+
+Una cosa más, ahora que es un sistema de verdad: guarda tu trabajo mientras
+avanzas, y deja que Claude te explique un cambio antes de hacerlo.
+
 ---
 
 ¿Listo? → **[EMPIEZA AQUÍ](START-HERE.md)**
