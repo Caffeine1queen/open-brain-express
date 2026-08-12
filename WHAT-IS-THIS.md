@@ -149,6 +149,13 @@ out while they're drafting something new. None of this is included,
 half-built, or coming later — it's what becomes possible once you have a
 brain and a Claude that can read it.
 
+None of this is a hypothetical. The person who built this repo runs a
+version of it with thousands of thoughts and tens of thousands of
+connections between them — years of exactly what's described above, built
+by one non-technical person, not a company, starting from the same place
+you are today. What you're building this afternoon is a small portion of
+that. You can build the rest too.
+
 The method fits in one sentence: ask your brain what you've already said
 about this, then ask Claude to help you build it. That's the whole skill,
 and it's the thing that keeps a finished project growing instead of sitting

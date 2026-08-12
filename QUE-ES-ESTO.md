@@ -149,6 +149,14 @@ escritura pasada mientras están redactando algo nuevo. Nada de esto viene
 incluido, a medio construir, ni "próximamente" — es lo que se vuelve posible
 una vez que tienes un cerebro y un Claude que lo puede leer.
 
+Nada de esto es un supuesto. Quien construyó este repositorio tiene su
+propia versión funcionando con miles de pensamientos guardados y decenas de
+miles de conexiones entre ellos — años de exactamente lo que se describe
+arriba, construido por una sola persona sin formación técnica, no por una
+empresa, empezando desde el mismo lugar donde tú estás hoy. Lo que
+construyes esta tarde es una parte pequeña de eso. El resto también lo
+puedes construir tú.
+
 El método cabe en una frase: pregúntale a tu cerebro qué has dicho ya sobre
 esto, y después pídele a Claude que te ayude a construirlo. Esa es toda la
 habilidad, y es lo que hace que un proyecto terminado siga creciendo en vez
