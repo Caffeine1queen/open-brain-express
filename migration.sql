@@ -453,6 +453,21 @@ create index if not exists idx_chunks_content_tsv on thought_chunks using gin (c
 
 alter table thought_chunks enable row level security;
 
+-- Backfill bookkeeping. Every write path chunks inline (enrich-thought, capture-url,
+-- capture-youtube), so under normal use this view stays empty — it only fills up for
+-- thoughts that existed BEFORE chunking did, which is exactly what backfill-brain (the
+-- upgrade tool) drains. The length threshold must match CHUNK_MIN_CONTENT in
+-- _shared/chunking.ts; it is duplicated here as a literal because a SQL view cannot import
+-- a TypeScript constant.
+create or replace view public.thoughts_needing_chunks as
+  select t.id, length(t.content) as chars, t.source, t.created_at
+  from thoughts t
+  where length(t.content) > 2000
+    and not exists (
+      select 1 from thought_chunks c where c.thought_id = t.id and c.origin = 'summary'
+    )
+  order by length(t.content) desc;
+
 
 -- ---------------------------------------------------------------------------
 -- 8. HYBRID SEARCH — meaning-based and keyword search, fused into one ranking.

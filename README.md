@@ -25,6 +25,21 @@ idioma antes que nada. No necesitas tener nada instalado para empezar.*
 
 ---
 
+### Already have a brain? · ¿Ya tienes un cerebro?
+
+Built one before — the seven-level course, the bare-bones starter repo, or an
+earlier version of this Express repo? Don't start over. There's a page for
+bringing an existing brain up to date without losing anything in it:
+
+# → **[UPGRADE / ACTUALIZAR](UPGRADE.md)** ←
+
+*¿Construiste uno antes — con el curso de siete niveles, el repositorio
+inicial, o una versión anterior de este repositorio Express? No empieces de
+cero. Hay una página para poner al día un cerebro existente sin perder nada
+de lo que ya tienes.*
+
+---
+
 ## Everything below is reference
 
 You do not need to read any of it. The prompt above opens these files for you at
