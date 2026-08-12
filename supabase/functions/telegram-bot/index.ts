@@ -47,11 +47,20 @@ async function reply(chatId: number | string, text: string): Promise<void> {
   }
 }
 
-function formatHit(t: { content: string; created_at: string; similarity?: number }, n: number): string {
+function formatHit(
+  t: { content: string; created_at: string; similarity?: number; match_source?: string; chunk_origin?: string },
+  n: number
+): string {
   const when = new Date(t.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
-  const score = typeof t.similarity === 'number' ? ` · ${Math.round(t.similarity * 100)}%` : ''
+  const score = typeof t.similarity === 'number' && t.similarity > 0 ? ` · ${Math.round(t.similarity * 100)}%` : ''
+  // match_source/chunk_origin come from search_thoughts_hybrid, not from /recent. A 'source' chunk
+  // matched a passage in the full article/transcript that is NOT in the content shown below —
+  // worth flagging so the match doesn't look unexplained.
+  const via = t.match_source === 'chunk'
+    ? (t.chunk_origin === 'source' ? ' · from full source text' : ' · excerpt')
+    : ''
   const body = t.content.replace(/\s+/g, ' ').slice(0, 400)
-  return `${n}. [${when}${score}]\n${body}${t.content.length > 400 ? '…' : ''}`
+  return `${n}. [${when}${score}${via}]\n${body}${t.content.length > 400 ? '…' : ''}`
 }
 
 Deno.serve(async (req) => {

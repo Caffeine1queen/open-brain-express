@@ -84,11 +84,23 @@ create index if not exists idx_thoughts_embedding
 -- win. A unique index can: the database itself refuses the second copy and
 -- turns it into an update instead.
 --
+-- content_hash is the content's plain identity — always md5(content), full stop.
+-- Kept SEPARATE from dedup_key below: content_hash never changes meaning, so it is
+-- what you would group by later to ask "what's actually duplicated in here?" (a
+-- reporting question), whereas dedup_key is the ENFORCEMENT column and can be
+-- deliberately overridden. GENERATED ALWAYS AS ... STORED means it is always in
+-- sync with content — no backfill job, and no way for it to drift.
+alter table thoughts
+  add column if not exists content_hash text generated always as (md5(content)) stored;
+
+create index if not exists idx_thoughts_content_hash on thoughts (content_hash);
+
 -- dedup_key defaults to md5(content), set by the trigger below so callers
--- never have to compute it themselves. It is a SEPARATE column from a direct
--- hash-uniqueness rule so that a deliberate second copy (the same text saved
--- on purpose, annotated differently) stays possible — supply your own
--- dedup_key and it will never collide with the auto-derived one.
+-- never have to compute it themselves. It is a SEPARATE column from content_hash
+-- (rather than putting the unique index directly on content_hash) so that a
+-- deliberate second copy (the same text saved on purpose, annotated differently)
+-- stays possible — supply your own dedup_key and it will never collide with the
+-- auto-derived one.
 -- ---------------------------------------------------------------------------
 alter table thoughts add column if not exists dedup_key text;
 
@@ -527,7 +539,10 @@ language sql stable as $$
            t.embedding, t.content_tsv,
            -- Grouping key for the per-document cap. Null for anything without one of
            -- these metadata keys, which is what exempts text/voice notes from the cap.
-           coalesce(t.metadata->>'url', t.metadata->>'video_id') as source_document
+           -- 'filename' matters as much as 'url' and 'video_id' here: it is what the
+           -- PDF capture path (index.html) writes, and a long OCR'd book is exactly the
+           -- kind of document that floods a result list if its cap group is missed.
+           coalesce(t.metadata->>'url', t.metadata->>'video_id', t.metadata->>'filename') as source_document
     from thoughts t
     where t.user_id = p_user_id
   ),
@@ -662,8 +677,28 @@ $$;
 -- VOLATILE, not STABLE, on purpose. This runs immediately after a new thought
 -- is inserted. A STABLE function may read an older snapshot of the table that
 -- does not yet contain the row we just saved. VOLATILE always sees current data.
+--
+-- Dropped by NAME first, same as search_thoughts_hybrid above. This one is not
+-- hypothetical: the seven-level course's own find_links_for_thought takes 4
+-- arguments with no p_user_id (source_id, source_embedding, match_threshold,
+-- match_count). That is a genuinely different signature from this one, so on
+-- an upgrading brain a plain CREATE OR REPLACE would not replace it — it would
+-- add a second overload and leave the 4-argument original behind for good.
 -- ---------------------------------------------------------------------------
-create or replace function find_links_for_thought(
+do $drop$
+declare sig text;
+begin
+  for sig in
+    select p.oid::regprocedure::text
+    from pg_proc p join pg_namespace n on n.oid = p.pronamespace
+    where p.proname = 'find_links_for_thought' and n.nspname = 'public'
+  loop
+    execute 'drop function ' || sig;
+  end loop;
+end
+$drop$;
+
+create function find_links_for_thought(
   p_user_id        uuid,
   source_id        uuid,
   source_embedding vector(1536),

@@ -248,7 +248,8 @@ const T = {
     count:n=>`${n} thought${n===1?'':'s'} in your brain`,
     byMeaning:n=>`${n} result${n===1?'':'s'} — matched by meaning`,
     byKeyword:n=>`${n} result${n===1?'':'s'} — matched by keyword`,
-    excerptBadge:'excerpt',
+    sourceExcerptBadge:'from full source text',
+    summaryExcerptBadge:'excerpt',
     needBoth:'Enter an email and a password.',
     shortPw:'Password must be at least 6 characters.',
     accountMade:'Account created. Signing you in…',
@@ -301,7 +302,8 @@ const T = {
     count:n=>`${n} pensamiento${n===1?'':'s'} en tu cerebro`,
     byMeaning:n=>`${n} resultado${n===1?'':'s'} — encontrados por significado`,
     byKeyword:n=>`${n} resultado${n===1?'':'s'} — encontrados por palabra`,
-    excerptBadge:'extracto',
+    sourceExcerptBadge:'del texto completo',
+    summaryExcerptBadge:'extracto',
     needBoth:'Escribe un correo y una contraseña.',
     shortPw:'La contraseña necesita al menos 6 caracteres.',
     accountMade:'Cuenta creada. Entrando…',
@@ -701,11 +703,17 @@ function render(x){
   // 0 means "matched by keyword only, no meaning-fingerprint score" — not "0% relevant".
   if (typeof x.similarity === 'number' && x.similarity > 0)
     badges.push(`<span class="badge sim">${Math.round(x.similarity*100)}%</span>`);
-  // match_source is only present on search results, never on the Recent list. 'chunk' means the
-  // hit came from a passage inside the full source text, not the summary shown below — worth
-  // flagging, since the excerpt itself isn't shown here.
-  if (x.match_source === 'chunk')
-    badges.push(`<span class="badge">${escapeHtml(t.excerptBadge)}</span>`);
+  // match_source/chunk_origin are only present on search results, never on the Recent list.
+  // 'chunk' means the match came from a specific passage, not the thought's own whole-content
+  // vector. Which ORIGIN that passage came from matters more than the word "chunk" does: a
+  // 'summary' chunk is a fragment of the text already shown below, but a 'source' chunk is a
+  // passage from the full article/transcript that is NOT shown here — without this label, a hit
+  // whose match text is invisible looks unexplained.
+  if (x.match_source === 'chunk') {
+    badges.push(`<span class="badge">${escapeHtml(
+      x.chunk_origin === 'source' ? t.sourceExcerptBadge : t.summaryExcerptBadge
+    )}</span>`);
+  }
   const tags = x.tags?.length
     ? `<div class="tags">${x.tags.map(v => '#' + escapeHtml(v)).join(' ')}</div>` : '';
   return `<div class="thought">

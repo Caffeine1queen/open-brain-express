@@ -115,6 +115,8 @@ function formatThought(t: {
   category?: string | null
   tags?: string[] | null
   similarity?: number
+  match_source?: string
+  chunk_origin?: string
 }): string {
   const date = new Date(t.created_at).toLocaleDateString('en-US', {
     year: 'numeric', month: 'short', day: 'numeric',
@@ -122,7 +124,13 @@ function formatThought(t: {
   const bits = [date]
   if (t.source && t.source !== 'text') bits.push(t.source)
   if (t.category) bits.push(t.category)
-  if (typeof t.similarity === 'number') bits.push(`${Math.round(t.similarity * 100)}% match`)
+  if (typeof t.similarity === 'number' && t.similarity > 0) bits.push(`${Math.round(t.similarity * 100)}% match`)
+  // match_source/chunk_origin only come back from search_brain, not list_recent. A 'source' chunk
+  // matched the full article/transcript text, which is not part of the content printed below —
+  // say so, or the match looks unexplained.
+  if (t.match_source === 'chunk') {
+    bits.push(t.chunk_origin === 'source' ? 'matched in full source text' : 'matched in an excerpt')
+  }
   const tagLine = t.tags?.length ? `\ntags: ${t.tags.join(', ')}` : ''
   return `[${bits.join(' · ')}]${tagLine}\n${t.content}`
 }
