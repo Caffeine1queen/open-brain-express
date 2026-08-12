@@ -31,9 +31,11 @@ Con el tiempo se vuelve una red en lugar de un montón.
 
 Tres cosas la hacen distinta de una app que te bajarías:
 
-**Entiende significados, no palabras.** Busca "cómo consigo clientes nuevos" y
-encuentra la nota que escribiste sobre captación — aunque nunca usaste esa frase.
-Está comparando lo que quisiste decir.
+**Entiende significados, no solo palabras — pero tampoco se le escapan las
+palabras exactas.** Busca "cómo consigo clientes nuevos" y encuentra la nota
+que escribiste sobre captación, aunque nunca usaste esa frase. Y si buscas un
+nombre exacto, un número de cuenta, o un término poco común, también lo
+encuentra — las dos formas de buscar trabajan juntas, no una en vez de la otra.
 
 **Conecta cosas por su cuenta.** Guardas hoy un pensamiento sobre precios, y se
 enlaza solo con un video que guardaste en marzo sobre la misma idea. No etiquetas
@@ -48,7 +50,9 @@ Claude, apuntas la nueva IA al mismo cerebro.
 
 Pegas una liga de YouTube. Unos treinta segundos después hay un resumen de lo que
 realmente se *dijo* en ese video, etiquetado, categorizado, y ya conectado con
-otras dos cosas que guardaste hace meses sobre el mismo tema.
+otras dos cosas que guardaste hace meses sobre el mismo tema. La transcripción
+completa queda guardada detrás del resumen, así que si el resumen no menciona
+algún detalle, ese detalle sigue ahí para encontrarlo.
 
 Tú no hiciste nada de eso. Ese es todo el punto.
 

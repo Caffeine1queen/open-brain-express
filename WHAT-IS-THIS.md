@@ -31,9 +31,11 @@ Over time it becomes a web rather than a pile.
 
 Three things make it different from an app you'd download:
 
-**It understands meaning, not words.** Search "how do I get new clients" and it
-finds the note you wrote about customer acquisition — even though you never used
-that phrase. It's matching what you meant.
+**It understands meaning, not just words — but it still catches the words that
+matter.** Search "how do I get new clients" and it finds the note you wrote
+about customer acquisition, even though you never used that phrase. And if you
+search for an exact name, an account number, or an unusual term, it catches
+that too — the two ways of searching work together, not instead of each other.
 
 **It connects things on its own.** Save a thought today about pricing, and it
 links itself to a video you saved in March about the same idea. You don't tag
@@ -48,7 +50,9 @@ one day, you point the new AI at the same brain.
 
 You paste a YouTube link. About thirty seconds later there's a summary of what
 was actually *said* in that video, tagged, categorised, and already connected to
-two other things you saved months ago on the same theme.
+two other things you saved months ago on the same theme. The full transcript
+stays behind it too, so a detail the summary didn't mention is still there to
+be found.
 
 You didn't do any of that. That's the whole point.
 
