@@ -17,5 +17,5 @@
 // your repository, never in a chat window.
 // ============================================================================
 
-const SUPABASE_URL = 'PASTE_YOUR_PROJECT_URL_HERE';
-const SUPABASE_ANON_KEY = 'PASTE_YOUR_PUBLIC_KEY_HERE';
+const SUPABASE_URL = 'https://wpmerbzwxzbrdbljirnc.supabase.co';
+const SUPABASE_ANON_KEY = 'sb_publishable_6Amlu4uw0cxmRMh-XBQJDg_4lGLTchH';
