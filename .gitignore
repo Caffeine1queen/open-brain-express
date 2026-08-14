@@ -22,3 +22,4 @@ node_modules/
 Thumbs.db
 .env.local
 supabase/.temp/
+.vercel
